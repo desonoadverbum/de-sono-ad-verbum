@@ -2516,8 +2516,6 @@ const WorldMap = (function(){
   const ctx = canvas.getContext("2d");
   const tip = $("#map-tip");
   let W,H,DPR,R,cx,cy;
-  let landPts = [];
-  let activePts = [];
   let graticule = [];
   let markers = [];
   let hoverMarker = null;
@@ -2558,18 +2556,6 @@ const WorldMap = (function(){
      para que se lea como "una región del país", no un pinchazo aislado */
   const BIG = {RU:2.4,CA:2.2,US:1.8,CN:1.9,BR:1.9,AU:1.9,IN:1.5,AR:1.6,KZ:1.6,DZ:1.4,CD:1.4,SD:1.3,MX:1.3,ID:1.4,SA:1.3,MN:1.4,PE:1.2,CO:1.2,BO:1.2,ET:1.1,EG:1.1,TR:1.1,FR:1.1,ES:1.05,UA:1.15,ZA:1.15,NA:1.1,NG:1.1,NE:1.2,ML:1.2,TD:1.2,LY:1.2};
 
-  function buildLandPoints(){
-    landPts = [];
-    for(let lat=-86; lat<=86; lat+=1.6){
-      const scale = Math.max(0.12, Math.cos(lat*Math.PI/180));
-      const step = 1.6/scale;
-      for(let lon=-180; lon<180; lon+=step){
-        const cell = cellAt(lon,lat);
-        if(cell.land) landPts.push({lat,lon,country:cell.country});
-      }
-    }
-  }
-
   function buildGraticule(){
     graticule = [];
     for(let lon=-180; lon<180; lon+=30){
@@ -2603,7 +2589,9 @@ const WorldMap = (function(){
       const r = clamp((5+Math.sqrt(n)*3.2)*tier, 5, 30);
       return {code,name,count:n,lat,lon,r};
     });
-    activePts = landPts.filter(p=>p.country && counts[p.country]).map(p=>({...p, count:counts[p.country]}));
+    activeByIdx.fill(0);
+    COUNTRY_GRID_CODES.forEach((code,i)=>{ if(counts[code]) activeByIdx[i+1] = 1; });
+    texDirty = true; // recalcular la textura de tierra en el siguiente fotograma
   }
 
   /* ---------- rotación / proyección ortográfica ---------- */
@@ -2615,6 +2603,49 @@ const WorldMap = (function(){
   const LX=-0.72, LY=0.42, LZ=0.38;
   const LLEN = Math.hypot(LX,LY,LZ);
   const Ln = [LX/LLEN, LY/LLEN, LZ/LLEN];
+
+  /* ---------- textura de tierra ----------
+     En vez de proyectar puntos dispersos de datos (que a cualquier zoom se
+     leen como "país hecho de puntos"), se recorre cada píxel de un lienzo
+     auxiliar pequeño, se invierte la proyección para saber a qué (lat,lon)
+     del globo corresponde, y se consulta la rejilla — así el continente
+     sale con relleno sólido y borde de costa continuo. El lienzo auxiliar
+     se escala luego sobre la esfera visible, del mismo modo que se
+     escalaría una textura sobre un globo en 3D. La posición en espacio de
+     vista de cada píxel (x1,y2,z2) y su sombreado direccional no dependen
+     de la rotación (la luz es fija respecto a la cámara), así que se
+     calculan una sola vez; solo el mapeo a (lat,lon) cambia con el giro. */
+  const TEX_R = 170, TEX_D = TEX_R*2;
+  const texCanvas = document.createElement("canvas");
+  texCanvas.width = TEX_D; texCanvas.height = TEX_D;
+  const texCtx = texCanvas.getContext("2d");
+  const texImg = texCtx.createImageData(TEX_D, TEX_D);
+  const glowCanvas = document.createElement("canvas");
+  glowCanvas.width = TEX_D; glowCanvas.height = TEX_D;
+  const glowCtx = glowCanvas.getContext("2d");
+  const glowImg = glowCtx.createImageData(TEX_D, TEX_D);
+  const texValid = [];
+  const texX1 = new Float32Array(TEX_D*TEX_D);
+  const texY2 = new Float32Array(TEX_D*TEX_D);
+  const texZ2 = new Float32Array(TEX_D*TEX_D);
+  const texShade = new Float32Array(TEX_D*TEX_D);
+  const activeByIdx = new Uint8Array(COUNTRY_GRID_CODES.length+1);
+  let texDirty = true;
+  (function buildTexGeometry(){
+    for(let py=0; py<TEX_D; py++){
+      const y2 = (TEX_R-0.5-py)/TEX_R;
+      for(let px=0; px<TEX_D; px++){
+        const x1 = (px+0.5-TEX_R)/TEX_R;
+        const rho2 = x1*x1+y2*y2;
+        if(rho2>1) continue;
+        const z2 = Math.sqrt(1-rho2);
+        const idx = py*TEX_D+px;
+        texX1[idx]=x1; texY2[idx]=y2; texZ2[idx]=z2;
+        texShade[idx] = clamp(0.16 + clamp(x1*Ln[0]+y2*Ln[1]+z2*Ln[2],0,1)*0.92, 0, 1);
+        texValid.push(idx);
+      }
+    }
+  })();
 
   function projectPoint(lat,lon){
     const phi = lon*Math.PI/180, theta = lat*Math.PI/180;
@@ -2664,6 +2695,48 @@ const WorldMap = (function(){
 
   const SHADOW = [66,40,19], LIT = [255,178,88];
   const ASHADOW = [138,84,10], ALIT = [255,214,90];
+
+  /* recalcula la textura de tierra para el ángulo de rotación actual */
+  let texHasActive = false;
+  function updateTexture(){
+    const cosY=Math.cos(yaw), sinY=Math.sin(yaw);
+    const cosP=Math.cos(pitch), sinP=Math.sin(pitch);
+    const data = texImg.data, glowData = glowImg.data;
+    data.fill(0); glowData.fill(0);
+    texHasActive = false;
+    for(let i=0;i<texValid.length;i++){
+      const idx = texValid[i];
+      const x1=texX1[idx], y2=texY2[idx], z2=texZ2[idx];
+      const y0 = y2*cosP + z2*sinP;
+      const z1 = -y2*sinP + z2*cosP;
+      const x0 = x1*cosY - z1*sinY;
+      const z0 = x1*sinY + z1*cosY;
+      const lat = Math.asin(clamp(y0,-1,1)) * 180/Math.PI;
+      const lon = Math.atan2(x0,z0) * 180/Math.PI;
+      const byte = gridValueAt(lon,lat);
+      if(byte===0) continue; // océano: transparente, se ve el fondo de la esfera
+      const active = byte>0 && byte<255 && activeByIdx[byte];
+      const k = texShade[idx];
+      const p4 = idx*4;
+      if(active){
+        texHasActive = true;
+        const ak = clamp(0.22+k*0.88,0,1);
+        data[p4]   = lerp(ASHADOW[0],ALIT[0],ak);
+        data[p4+1] = lerp(ASHADOW[1],ALIT[1],ak);
+        data[p4+2] = lerp(ASHADOW[2],ALIT[2],ak);
+        data[p4+3] = 255;
+        glowData[p4]=ALIT[0]; glowData[p4+1]=ALIT[1]; glowData[p4+2]=ALIT[2]; glowData[p4+3]=220;
+      } else {
+        data[p4]   = lerp(SHADOW[0],LIT[0],k);
+        data[p4+1] = lerp(SHADOW[1],LIT[1],k);
+        data[p4+2] = lerp(SHADOW[2],LIT[2],k);
+        data[p4+3] = 255;
+      }
+    }
+    texCtx.putImageData(texImg, 0, 0);
+    if(texHasActive) glowCtx.putImageData(glowImg, 0, 0);
+  }
+
   let t0=performance.now(), lastT=t0;
   function draw(now){
     requestAnimationFrame(draw);
@@ -2702,73 +2775,30 @@ const WorldMap = (function(){
       ctx.stroke();
     });
 
-    /* tierra sólida: puntos densos agrupados en cubos de sombra (pocas
-       llamadas a fill) con sombreado direccional tipo metal */
-    const spacing = R*0.0279; // ~1.6°
-    const ptR = Math.max(1.7, spacing*0.66);
-    const NB = 18;
-    if(!draw._buckets) draw._buckets = Array.from({length:NB},()=>[]);
-    const buckets = draw._buckets;
-    for(let i=0;i<NB;i++) buckets[i].length = 0;
-    landPts.forEach(p=>{
-      const pt = projectPoint(p.lat,p.lon);
-      if(!pt.front) return;
-      const ndotl = clamp(pt.nx*Ln[0]+pt.ny*Ln[1]+pt.nz*Ln[2], 0, 1);
-      const k = clamp(0.16 + ndotl*0.92, 0, 1);
-      const bi = Math.min(NB-1, Math.round(k*(NB-1)));
-      buckets[bi].push(pt.x, pt.y, ptR*lerp(0.82,1.08,pt.z));
-    });
-    for(let bi=0; bi<NB; bi++){
-      const pts = buckets[bi];
-      if(!pts.length) continue;
-      const k = bi/(NB-1);
-      const rr = Math.round(lerp(SHADOW[0],LIT[0],k));
-      const gg = Math.round(lerp(SHADOW[1],LIT[1],k));
-      const bb = Math.round(lerp(SHADOW[2],LIT[2],k));
-      ctx.fillStyle = `rgb(${rr},${gg},${bb})`;
-      ctx.beginPath();
-      for(let i=0;i<pts.length;i+=3){
-        ctx.moveTo(pts[i]+pts[i+2], pts[i+1]);
-        ctx.arc(pts[i], pts[i+1], pts[i+2], 0, Math.PI*2);
-      }
-      ctx.fill();
+    /* tierra: textura muestreada por inversión de la proyección (ver
+       updateTexture), escalada sobre la esfera visible — continente sólido
+       y borde de costa continuo, sin huecos entre puntos. Los países con
+       participación quedan pintados en ámbar dentro de esa misma textura,
+       así que se leen como "el país entero", no como un punto suelto. Se
+       recalcula a ~40 fps (de sobra para un giro lento) para no repetir el
+       barrido de píxeles en cada fotograma. */
+    if(texDirty || !draw._texT || (now-draw._texT)>=1000/40){
+      updateTexture();
+      draw._texT = now; texDirty = false;
     }
+    ctx.imageSmoothingEnabled = true;
+    ctx.drawImage(texCanvas, cx-R, cy-R, R*2, R*2);
 
-    /* territorios activados: los puntos de tierra de los países con
-       participación se repintan en amarillo/naranja y "alumbran". Son
-       pocos puntos (un subconjunto), así que se dibujan uno a uno. */
-    if(activePts.length){
+    if(texHasActive){
       const pulse = prefersReduced ? 1 : 1+Math.sin(t*1.3)*0.14;
       ctx.save();
       ctx.globalCompositeOperation = "lighter";
-      activePts.forEach(p=>{
-        const pt = projectPoint(p.lat,p.lon);
-        if(!pt.front) return;
-        const ndotl = clamp(pt.nx*Ln[0]+pt.ny*Ln[1]+pt.nz*Ln[2], 0, 1);
-        const k = clamp(0.22 + ndotl*0.88, 0, 1);
-        const rr = Math.round(lerp(ASHADOW[0],ALIT[0],k));
-        const gg = Math.round(lerp(ASHADOW[1],ALIT[1],k));
-        const bb = Math.round(lerp(ASHADOW[2],ALIT[2],k));
-        const glowR = ptR*lerp(0.82,1.08,pt.z)*2.1*pulse;
-        const grad = ctx.createRadialGradient(pt.x,pt.y,0,pt.x,pt.y,glowR);
-        grad.addColorStop(0, `rgba(${rr},${gg},${bb},.85)`);
-        grad.addColorStop(1, `rgba(${rr},${gg},${bb},0)`);
-        ctx.fillStyle = grad;
-        ctx.beginPath(); ctx.arc(pt.x,pt.y,glowR,0,Math.PI*2); ctx.fill();
-      });
+      ctx.globalAlpha = clamp(0.7*pulse, 0, 1);
+      ctx.filter = `blur(${Math.max(2,R*0.05)}px)`;
+      ctx.drawImage(glowCanvas, cx-R, cy-R, R*2, R*2);
+      ctx.filter = "none";
+      ctx.globalAlpha = 1;
       ctx.restore();
-      activePts.forEach(p=>{
-        const pt = projectPoint(p.lat,p.lon);
-        if(!pt.front) return;
-        const ndotl = clamp(pt.nx*Ln[0]+pt.ny*Ln[1]+pt.nz*Ln[2], 0, 1);
-        const k = clamp(0.22 + ndotl*0.88, 0, 1);
-        const rr = Math.round(lerp(ASHADOW[0],ALIT[0],k));
-        const gg = Math.round(lerp(ASHADOW[1],ALIT[1],k));
-        const bb = Math.round(lerp(ASHADOW[2],ALIT[2],k));
-        ctx.fillStyle = `rgb(${rr},${gg},${bb})`;
-        const r = ptR*lerp(0.82,1.08,pt.z);
-        ctx.beginPath(); ctx.arc(pt.x,pt.y,r,0,Math.PI*2); ctx.fill();
-      });
     }
 
     /* brillo especular fijo respecto a la cámara (posición de la luz) */
@@ -2844,7 +2874,6 @@ const WorldMap = (function(){
     if(!dragging){ mouseX=-9999; mouseY=-9999; hoverMarker=null; tip.classList.remove("show"); }
   });
 
-  buildLandPoints();
   buildGraticule();
   buildMarkers();
   resize();

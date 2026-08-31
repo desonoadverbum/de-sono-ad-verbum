@@ -1526,9 +1526,16 @@ const StateStore = (function(){
       }
     }catch(e){}
     try{
-      const [{initializeApp}, fs] = await Promise.all([
-        import("https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js"),
-        import("https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js")
+      // límite de tiempo: si la carga de Firebase se queda colgada (redes lentas,
+      // cortafuegos que no responden ni con error ni con éxito), no debe dejar
+      // nunca la página "cargando" indefinidamente ni retrasar el resto.
+      const timeout = (ms)=> new Promise((_,rej)=>setTimeout(()=>rej(new Error("timeout")), ms));
+      const [{initializeApp}, fs] = await Promise.race([
+        Promise.all([
+          import("https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js"),
+          import("https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js")
+        ]),
+        timeout(7000)
       ]);
       const app = initializeApp(FIREBASE_CONFIG);
       fsDb = fs.getFirestore(app);
@@ -3039,7 +3046,6 @@ const WorldMap = (function(){
             <button type="button" class="profile-opt" data-v="55-64">55–64</button>
             <button type="button" class="profile-opt" data-v="65+">65 o más</button>
           </div>
-          <input type="number" id="profile-age-custom" class="pinput profile-age-input" placeholder="O escribe tu edad exacta" min="5" max="110" />
         </div>
         <div class="profile-field">
           <div class="profile-label">¿Tienes estudios musicales?</div>
@@ -3065,16 +3071,12 @@ const WorldMap = (function(){
           $$(`#${id} .profile-opt`).forEach(x=>x.classList.remove("sel"));
           b.classList.add("sel");
           setter(b.dataset.v);
-          if(id==="profile-age") $("#profile-age-custom").value = "";
         });
       });
     }
     wireGroup("profile-sex", v=>sex=v);
     wireGroup("profile-age", v=>age=v);
     wireGroup("profile-music", v=>music=v);
-    $("#profile-age-custom").addEventListener("input", (e)=>{
-      if(e.target.value){ age = e.target.value; $$("#profile-age .profile-opt").forEach(x=>x.classList.remove("sel")); }
-    });
     $("#profile-country").addEventListener("change", (e)=>{ country = e.target.value || null; });
 
     $("#profile-submit").addEventListener("click", async ()=>{

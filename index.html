@@ -1488,7 +1488,24 @@ const lerp = (a,b,t)=>a+(b-a)*t;
 const map = (v,a,b,c,d)=>c+(clamp(v,Math.min(a,b),Math.max(a,b))-a)*(d-c)/(b-a);
 const prefersReduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-/* ---------- estado compartido del Atlas (participación de la comunidad) ---------- */
+/* ---------- estado compartido del Atlas (participación de la comunidad) ----------
+   Fuente de verdad: Firestore (base de datos en tiempo real), para que las
+   aportaciones se vean al instante en cualquier visitante, en cualquier
+   alojamiento (GitHub Pages incluido). Si Firestore no llega a cargar (por
+   ejemplo, dentro del visor de Artifacts de Claude, cuya política de
+   contenido bloquea scripts externos que no sean de unos pocos CDN
+   concretos), se recurre en segundo lugar al mecanismo nativo de Claude
+   (window.claude.use("artifact")), y si tampoco existe, la participación
+   se queda solo en el navegador de quien escribe. */
+const FIREBASE_CONFIG = {
+  apiKey: "AIzaSyCOycLmaA9Na59bqo6-Q3V7lgqbuov9mHo",
+  authDomain: "de-sono-ad-verbum.firebaseapp.com",
+  projectId: "de-sono-ad-verbum",
+  storageBucket: "de-sono-ad-verbum.firebasestorage.app",
+  messagingSenderId: "862940798248",
+  appId: "1:862940798248:web:deba857b7984efd816041d"
+};
+
 const StateStore = (function(){
   let subs = [];
   try{
@@ -1500,6 +1517,7 @@ const StateStore = (function(){
   let canWrite = true;
   let claudeArtifact = null;
   let claudeDownloads = null;
+  let fsDb = null, fsApi = null;
   const capReady = (async function(){
     try{
       if(window.claude && typeof window.claude.use === "function"){
@@ -1507,6 +1525,23 @@ const StateStore = (function(){
         claudeDownloads = await window.claude.use("downloads");
       }
     }catch(e){}
+    try{
+      const [{initializeApp}, fs] = await Promise.all([
+        import("https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js"),
+        import("https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js")
+      ]);
+      const app = initializeApp(FIREBASE_CONFIG);
+      fsDb = fs.getFirestore(app);
+      fsApi = fs;
+      const q = fs.query(fs.collection(fsDb, "submissions"), fs.orderBy("ts", "asc"));
+      fs.onSnapshot(q, (snap)=>{
+        subs = snap.docs.map(d=>{
+          const data = d.data();
+          return {work: data.work, words: data.words||[], profile: data.profile||null, ts: data.ts||Date.now()};
+        });
+        notify();
+      }, ()=>{ fsDb = null; fsApi = null; });
+    }catch(e){ fsDb = null; fsApi = null; }
   })();
 
   async function getPristine(){
@@ -1529,9 +1564,20 @@ const StateStore = (function(){
   function notify(){ listeners.forEach(fn=>{ try{ fn(subs.slice()); }catch(e){} }); }
 
   async function submit(entry){
+    await capReady;
+    if(fsDb && fsApi){
+      try{
+        await fsApi.addDoc(fsApi.collection(fsDb, "submissions"), entry);
+        // onSnapshot (con compensación de latencia) actualiza `subs` y llama a notify()
+        // en cuanto el propio navegador registra el envío, sin esperar a los demás.
+        return {ok:true};
+      }catch(err){
+        // la escritura en Firestore falló (sin conexión, reglas, etc.):
+        // seguimos con los mecanismos de reserva de más abajo.
+      }
+    }
     subs.push(entry);
     notify();
-    await capReady;
     if(!claudeArtifact) return {ok:false, code:"no-artifact"};
     if(!canWrite) return {ok:false, code:"read-only"};
     try{
@@ -2263,9 +2309,15 @@ const WordCloud = (function(){
     const data = currentData().slice().sort((a,b)=>b.idl-a.idl);
     const idls = data.map(d=>d.idl);
     const minI = Math.min(...idls), maxI = Math.max(...idls);
+    const sizeMin = W<640?14:18, sizeMax = W<640?40:60;
     const placed = [];
     items = data.map((d,i)=>{
-      const size = map(d.idl, minI, maxI, W<640?14:18, W<640?40:60);
+      // cuando todas las palabras del filtro actual tienen el mismo IDL
+      // (p.ej. una categoría que solo tiene aportaciones nuevas, todas con
+      // el mismo peso inicial), minI===maxI dejaría map() en NaN — se usa
+      // un tamaño medio fijo en ese caso, en vez de amontonar las palabras
+      // en una esquina del lienzo.
+      const size = (maxI>minI) ? map(d.idl, minI, maxI, sizeMin, sizeMax) : (sizeMin+sizeMax)/2;
       ctx.font = `600 ${size}px "Cormorant Garamond", Georgia, serif`;
       const tw = ctx.measureText(d.w).width;
       const th = size*1.05;
@@ -2980,11 +3032,12 @@ const WorldMap = (function(){
         <div class="profile-field">
           <div class="profile-label">Edad</div>
           <div class="profile-options" id="profile-age">
-            <button type="button" class="profile-opt" data-v="12-15">12–15</button>
-            <button type="button" class="profile-opt" data-v="16-18">16–18</button>
-            <button type="button" class="profile-opt" data-v="19-25">19–25</button>
-            <button type="button" class="profile-opt" data-v="26-40">26–40</button>
-            <button type="button" class="profile-opt" data-v="41+">41 o más</button>
+            <button type="button" class="profile-opt" data-v="10-13">10–13</button>
+            <button type="button" class="profile-opt" data-v="14-19">14–19</button>
+            <button type="button" class="profile-opt" data-v="20-34">20–34</button>
+            <button type="button" class="profile-opt" data-v="35-54">35–54</button>
+            <button type="button" class="profile-opt" data-v="55-64">55–64</button>
+            <button type="button" class="profile-opt" data-v="65+">65 o más</button>
           </div>
           <input type="number" id="profile-age-custom" class="pinput profile-age-input" placeholder="O escribe tu edad exacta" min="5" max="110" />
         </div>

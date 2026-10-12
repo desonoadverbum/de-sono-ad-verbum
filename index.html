@@ -1075,7 +1075,7 @@ footer{
       <canvas id="worldmap"></canvas>
       <div class="map-tip" id="map-tip"></div>
     </div>
-    <button class="export-btn mono" id="export-btn" type="button">↓ Exportar datos del atlas (CSV)</button>
+    <button class="export-btn mono" id="export-btn" type="button">↓ Exportar datos del atlas (LexPRO)</button>
   </div>
 </section>
 
@@ -1149,6 +1149,8 @@ footer{
 </footer>
 
 <script id="dsav-state" type="application/json">{"submissions":[]}</script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
 <script>
 "use strict";
@@ -1611,23 +1613,68 @@ const StateStore = (function(){
     }
   }
 
+  /* Exportación en formato LexPRO: un libro .xlsx con una hoja "Informantes"
+     (código + variables sociodemográficas codificadas), su leyenda en
+     "Variables", y una hoja por pieza (Abyssus, Ad_lucem, Vortex,
+     Transmutatio) donde la fila N es el mismo informante que la fila N
+     de "Informantes" — en blanco si esa persona no participó en esa pieza. */
+  const LEXPRO_PIECES = [
+    {id:"abyssus", sheet:"Abyssus"},
+    {id:"adlucem", sheet:"Ad_lucem"},
+    {id:"vortex", sheet:"Vortex"},
+    {id:"transmutatio", sheet:"Transmutatio"},
+  ];
+  const LEXPRO_SEX_CODE = {hombre:1, mujer:2, otro:3};
+  const LEXPRO_AGE_CODE = {"10-13":1, "14-19":2, "20-34":3, "35-54":4, "55-64":5, "65+":6};
+  const LEXPRO_MUSIC_CODE = {no:1, si:2};
+
   async function exportCSV(){
-    const rows = [["fecha","composicion","sexo","edad","estudios_musicales","pais","palabra"]];
-    subs.forEach(s=>{
+    await capReady;
+    if(typeof XLSX === "undefined"){
+      // la librería de exportación (cdnjs) no llegó a cargar — sin red, o
+      // bloqueada por la política de contenido del visitante.
+      return false;
+    }
+
+    const informantesRows = [["CODIGO_INFORMANTE","SEXO","EDAD","PAIS","ESTUDIOS_MUSICALES"]];
+    subs.forEach((s,i)=>{
       const p = s.profile || {};
       const paisNombre = p.country && COUNTRY_META[p.country] ? COUNTRY_META[p.country][2] : "";
-      (s.words||[]).forEach(w=> rows.push([new Date(s.ts||Date.now()).toISOString(), s.work, p.sex||"", p.age||"", p.music||"", paisNombre, w]));
+      informantesRows.push([i+1, LEXPRO_SEX_CODE[p.sex]||"", LEXPRO_AGE_CODE[p.age]||"", paisNombre, LEXPRO_MUSIC_CODE[p.music]||""]);
     });
-    const csv = rows.map(r=>r.map(c=>`"${String(c).replace(/"/g,'""')}"`).join(",")).join("\n");
-    await capReady;
+
+    const variablesRows = [
+      ["SEXO","EDAD","ESTUDIOS_MUSICALES"],
+      ["HOMBRE","10-13","NO"],
+      ["MUJER","14-19","SÍ"],
+      ["OTRO","20-34",""],
+      ["","35-54",""],
+      ["","55-64",""],
+      ["","65+",""],
+    ];
+
+    const pieceWordRows = {};
+    LEXPRO_PIECES.forEach(pc=>{ pieceWordRows[pc.id] = subs.map(()=>[]); });
+    subs.forEach((s,i)=>{ if(pieceWordRows[s.work]) pieceWordRows[s.work][i] = (s.words||[]).slice(); });
+
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(informantesRows), "Informantes");
+    XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(variablesRows), "Variables");
+    LEXPRO_PIECES.forEach(pc=> XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(pieceWordRows[pc.id]), pc.sheet));
+
     if(claudeDownloads){
-      try{ await claudeDownloads.save({filename:"dsav-atlas-datos.csv", data: csv}); return true; }catch(e){}
+      try{
+        const b64 = XLSX.write(wb, {type:"base64", bookType:"xlsx"});
+        await claudeDownloads.save({filename:"dsav-atlas-lexpro.xlsx", data: b64});
+        return true;
+      }catch(e){}
     }
     try{
-      const blob = new Blob([csv], {type:"text/csv"});
+      const arr = XLSX.write(wb, {type:"array", bookType:"xlsx"});
+      const blob = new Blob([arr], {type:"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"});
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
-      a.href = url; a.download = "dsav-atlas-datos.csv";
+      a.href = url; a.download = "dsav-atlas-lexpro.xlsx";
       document.body.appendChild(a); a.click(); a.remove();
       setTimeout(()=>URL.revokeObjectURL(url), 2000);
       return true;

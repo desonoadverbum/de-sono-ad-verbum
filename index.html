@@ -1544,13 +1544,23 @@ const StateStore = (function(){
       fsDb = fs.getFirestore(app);
       fsApi = fs;
       const q = fs.query(fs.collection(fsDb, "submissions"), fs.orderBy("ts", "asc"));
-      fs.onSnapshot(q, (snap)=>{
-        subs = snap.docs.map(d=>{
-          const data = d.data();
-          return {work: data.work, words: data.words||[], profile: data.profile||null, ts: data.ts||Date.now()};
-        });
-        notify();
-      }, ()=>{ fsDb = null; fsApi = null; });
+      // Esperamos a que llegue el PRIMER snapshot (no solo a que se registre el
+      // listener) antes de dar la carga por terminada: si no, capReady podia
+      // resolverse con `subs` todavia vacio o a medias, y exportCSV() exportaba
+      // datos incompletos si se pulsaba el boton justo tras cargar la pagina.
+      await Promise.race([
+        new Promise((resolve)=>{
+          fs.onSnapshot(q, (snap)=>{
+            subs = snap.docs.map(d=>{
+              const data = d.data();
+              return {work: data.work, words: data.words||[], profile: data.profile||null, ts: data.ts||Date.now()};
+            });
+            notify();
+            resolve();
+          }, ()=>{ fsDb = null; fsApi = null; resolve(); });
+        }),
+        new Promise((resolve)=>setTimeout(resolve, 7000))
+      ]);
     }catch(e){ fsDb = null; fsApi = null; }
   })();
 
@@ -3005,7 +3015,7 @@ const WorldMap = (function(){
           <span class="work-time mono p-time">Escucha la pieza completa para empezar</span>
         </div>
         <div class="wiz-timer mono" id="wiz-timer" hidden></div>
-        <textarea class="pinput" id="wiz-input" disabled style="max-width:520px;" placeholder="Escucha la pieza entera. En cuanto termine su reproducción, tendrá 2 minutos para escribir aquí las primeras palabras, imágenes y asociaciones que le hayan venido a la mente al escuchar dicha pieza."></textarea>
+        <textarea class="pinput" id="wiz-input" disabled style="max-width:520px;" placeholder="Escucha la pieza entera. En cuanto termine su reproducción, tendrá 2 minutos para escribir aquí las primeras palabras, imágenes y asociaciones que le hayan venido a la mente al escuchar dicha pieza. Separa cada palabra con una coma o pulsando Intro (salto de línea)."></textarea>
         <div style="display:flex;align-items:center;gap:1rem;flex-wrap:wrap;justify-content:center;">
           <button class="psubmit" id="wiz-submit" style="--wc-accent:${chosen.color}" disabled>Enviar respuesta</button>
           <span class="p-feedback" id="wiz-feedback"></span>
@@ -3064,7 +3074,7 @@ const WorldMap = (function(){
       submit.disabled = true;
       stopAudio();
       const raw = ta.value.trim();
-      const words = raw.split(/[,\n]/).map(w=>w.trim().toLowerCase()).filter(Boolean).slice(0,12);
+      const words = raw.split(/[,;.\n]+/).map(w=>w.trim().toLowerCase()).filter(Boolean);
       step = 3; renderSteps();
       renderProfile(words);
     }
@@ -3087,7 +3097,7 @@ const WorldMap = (function(){
     submit.addEventListener("click", ()=>{
       const raw = ta.value.trim();
       if(!raw){ feedback.textContent = "Escribe al menos una palabra."; return; }
-      const words = raw.split(/[,\n]/).map(w=>w.trim().toLowerCase()).filter(Boolean).slice(0,12);
+      const words = raw.split(/[,;.\n]+/).map(w=>w.trim().toLowerCase()).filter(Boolean);
       clearCountdown();
       submit.disabled = true;
       ta.disabled = true;

@@ -40,6 +40,10 @@
   --grain-opacity:.05;
   --ease-out:cubic-bezier(.16,1,.3,1);
   --ease-in-out:cubic-bezier(.65,0,.35,1);
+  /* Acento para destacar la llamada a participar: el mismo naranja/ámbar
+     que ya se usa para las selecciones (--adlucem), no un color nuevo */
+  --neon:var(--adlucem);
+  --neon-soft:var(--adlucem-soft);
 }
 
 *,*::before,*::after{box-sizing:border-box;}
@@ -193,6 +197,17 @@ html,body{
   padding-top:6rem;
   padding-bottom:4.5rem;
 }
+/* Difumina la transición entre el hero (fondo cálido del sol RA) y la
+   siguiente sección, para que no se note un corte brusco a negro. */
+#hero::after{
+  content:"";
+  position:absolute;
+  left:0;right:0;bottom:0;
+  height:26vh;
+  background:linear-gradient(to bottom, transparent, var(--bg) 85%);
+  pointer-events:none;
+  z-index:2;
+}
 @media (max-height:720px){
   #hero{padding-top:5rem;padding-bottom:3.5rem;}
   .hero-sub{margin-top:.9rem;}
@@ -320,6 +335,23 @@ html,body{
   color:#1a1006;font-weight:600;
 }
 .hero-btn-primary:hover{transform:translateY(-2px);box-shadow:0 14px 34px -12px rgba(255,160,80,.55);}
+/* CTA de participar: destacada porque es la acción que más queremos que
+   haga la gente al entrar, antes incluso que escuchar el EP. Mismo naranja
+   que el resto de selecciones de la web, no un color nuevo. */
+.hero-btn-highlight{
+  background:var(--adlucem);
+  color:#1a1006;font-weight:700;
+  font-size:1.2rem;
+  padding:1.15rem 2.5rem;
+  box-shadow:0 0 0 1px rgba(255,193,94,.5),0 18px 44px -8px rgba(255,193,94,.75);
+  animation:heroCtaGlow 2.6s ease-in-out infinite;
+}
+.hero-btn-highlight:hover{transform:translateY(-2px) scale(1.03);box-shadow:0 0 0 1px rgba(255,193,94,.65),0 22px 50px -8px rgba(255,193,94,.9);}
+@keyframes heroCtaGlow{
+  0%,100%{box-shadow:0 0 0 1px rgba(255,193,94,.5),0 18px 44px -8px rgba(255,193,94,.75);}
+  50%{box-shadow:0 0 0 1px rgba(255,193,94,.75),0 18px 58px -6px rgba(255,193,94,1);}
+}
+@media(prefers-reduced-motion:reduce){.hero-btn-highlight{animation:none;}}
 .hero-btn-ghost{
   border:1px solid var(--line-strong);color:var(--text-dim);background:rgba(9,9,9,.35);
 }
@@ -383,6 +415,7 @@ footer{background:#3d2410;}
   max-width:62ch;
   line-height:1.65;
   font-weight:300;
+  text-align:justify;
 }
 
 /* reveal primitives */
@@ -448,6 +481,7 @@ footer{background:#3d2410;}
 }
 .about-card p{
   margin-top:.8rem;color:var(--text-dim);line-height:1.7;font-size:.98rem;font-weight:300;
+  text-align:justify;
 }
 
 /* ============ COMPOSICIONES ============ */
@@ -455,7 +489,7 @@ footer{background:#3d2410;}
 @media(min-width:960px){.works-grid{grid-template-columns:1fr 1fr;}}
 .work-card{
   position:relative;
-  border:1px solid var(--line);
+  border:1px solid var(--adlucem);
   border-radius:3px;
   padding:clamp(1.75rem,3vw,2.75rem);
   overflow:hidden;
@@ -493,6 +527,7 @@ footer{background:#3d2410;}
   font-size:.98rem;
   line-height:1.75;
   max-width:70ch;
+  text-align:justify;
 }
 .stream-block{margin-top:clamp(2.2rem,4vw,3.2rem);text-align:center;}
 .stream-label{
@@ -515,7 +550,7 @@ footer{background:#3d2410;}
   background:linear-gradient(100deg,var(--adlucem) 0%,#FF9A4D 60%,var(--abyssus) 100%);
   -webkit-background-clip:text;background-clip:text;color:transparent;
 }
-.work-desc{margin-top:1rem;color:var(--text-dim);line-height:1.75;font-size:.98rem;font-weight:300;max-width:52ch;}
+.work-desc{margin-top:1rem;color:var(--text-dim);line-height:1.75;font-size:.98rem;font-weight:300;max-width:52ch;text-align:justify;}
 .work-meta{
   margin-top:1.4rem;display:flex;flex-wrap:wrap;gap:.5rem 1.6rem;
   font-family:"JetBrains Mono",monospace;font-size:.75rem;color:var(--text-faint);
@@ -524,6 +559,7 @@ footer{background:#3d2410;}
 .work-context{
   margin-top:1.4rem;padding-top:1.4rem;border-top:1px solid var(--line);
   color:var(--text-dim);font-size:.92rem;line-height:1.7;font-style:italic;font-weight:300;
+  text-align:justify;
 }
 .work-player{
   margin-top:auto;padding-top:1.8rem;
@@ -539,7 +575,7 @@ footer{background:#3d2410;}
 .work-card.playing .play-btn,.play-btn.playing{background:var(--wc-accent,var(--accent));border-color:var(--wc-accent,var(--accent));color:#090909;box-shadow:0 0 26px -6px var(--wc-accent,var(--accent));}
 .wave{flex:1;height:44px;position:relative;}
 .wave canvas{width:100%;height:100%;}
-.work-time{font-family:"JetBrains Mono",monospace;font-size:.72rem;color:var(--text-faint);white-space:nowrap;}
+.work-time{font-family:"JetBrains Mono",monospace;font-size:.84rem;color:var(--text-faint);white-space:nowrap;}
 
 /* ============ METODOLOGÍA ============ */
 .method-track{
@@ -569,14 +605,14 @@ footer{background:#3d2410;}
   background:linear-gradient(100deg,var(--adlucem) 0%,#FF9A4D 60%,var(--abyssus) 100%);
   -webkit-background-clip:text;background-clip:text;color:transparent;
 }
-.method-body p{margin-top:.6rem;color:var(--text-dim);line-height:1.7;max-width:60ch;font-weight:300;}
+.method-body p{margin-top:.6rem;color:var(--text-dim);line-height:1.7;max-width:60ch;font-weight:300;text-align:justify;}
 .method-bar{height:2px;background:var(--line);margin-top:1rem;width:100%;overflow:hidden;}
 .method-bar i{display:block;height:100%;width:0%;background:linear-gradient(90deg,var(--grad-a),var(--grad-b));transition:width .6s var(--ease-out);}
 
 /* ============ RESULTADOS / NUBE ============ */
 .cloud-wrap{
   position:relative;
-  border:1px solid var(--line);
+  border:1px solid var(--adlucem);
   border-radius:3px;
   height:clamp(420px,58vw,640px);
   background:radial-gradient(ellipse at 50% 40%,#0d0d10 0%,#090909 75%);
@@ -614,10 +650,10 @@ footer{background:#3d2410;}
 .map-head{margin:clamp(2.6rem,5vw,4rem) 0 1.2rem;text-align:center;}
 .map-title{font-family:var(--font-serif);font-size:clamp(1.3rem,1.1rem + .8vw,1.8rem);font-weight:600;color:var(--text);}
 .map-title.grad-title{color:transparent;}
-.map-sub{margin-top:.4rem;color:var(--text-dim);font-size:.88rem;max-width:52ch;margin-inline:auto;}
+.map-sub{margin-top:.4rem;color:var(--text-dim);font-size:.88rem;max-width:52ch;margin-inline:auto;text-align:justify;}
 .map-wrap{
   position:relative;width:100%;max-width:560px;margin:0 auto;
-  aspect-ratio:1/1;border:1px solid var(--line);border-radius:4px;
+  aspect-ratio:1/1;border:1px solid var(--adlucem);border-radius:4px;
   background:radial-gradient(120% 140% at 50% 20%, rgba(255,180,90,.05) 0%, rgba(9,9,9,0) 60%),var(--bg-card);
   overflow:hidden;touch-action:none;-webkit-user-select:none;user-select:none;
 }
@@ -656,11 +692,25 @@ footer{background:#3d2410;}
 .export-btn:disabled{opacity:.55;cursor:default;}
 
 /* ============ PARTICIPA — asistente ============ */
-.wizard{max-width:760px;margin:0 auto;}
+/* Se destaca todo este bloque a propósito: participar es la acción
+   principal que se quiere que haga la gente al entrar en la página. */
+.wizard{
+  max-width:760px;margin:0 auto;
+  padding:clamp(1.6rem,3.4vw,2.8rem);
+  border:1px solid var(--neon);
+  border-radius:4px;
+  background:linear-gradient(160deg, var(--neon-soft), transparent 75%);
+  box-shadow:0 0 95px -18px rgba(255,193,94,.5);
+}
 .wizard-steps{display:flex;justify-content:center;gap:.5rem;margin-bottom:clamp(2rem,4vw,3rem);flex-wrap:wrap;}
-.wizard-steps .w-step{display:flex;align-items:center;gap:.5rem;padding:.4rem .9rem;border:1px solid var(--line);border-radius:100px;font-size:.7rem;letter-spacing:.06em;text-transform:uppercase;color:var(--text-faint);transition:border-color .3s,color .3s;}
-.wizard-steps .w-step.active{color:var(--text);border-color:var(--wiz-accent,var(--accent));}
-.wizard-steps .w-step.done{color:var(--text-dim);}
+.wizard-steps .w-step{display:flex;align-items:center;gap:.5rem;padding:.6rem 1.3rem;border:1px solid var(--line);border-radius:100px;font-size:.95rem;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--text-faint);transition:border-color .3s,color .3s,background .3s,box-shadow .3s;}
+.wizard-steps .w-step.active{color:#1a1006;background:var(--neon);border-color:var(--neon);font-weight:700;box-shadow:0 0 28px -4px rgba(255,193,94,.9),0 0 0 1px rgba(255,193,94,.5);animation:stepGlow 2.6s ease-in-out infinite;}
+.wizard-steps .w-step.done{color:var(--text-dim);border-color:var(--line-strong);}
+@keyframes stepGlow{
+  0%,100%{box-shadow:0 0 28px -4px rgba(255,193,94,.9),0 0 0 1px rgba(255,193,94,.5);}
+  50%{box-shadow:0 0 40px -2px rgba(255,193,94,1),0 0 0 1px rgba(255,193,94,.7);}
+}
+@media(prefers-reduced-motion:reduce){.wizard-steps .w-step.active{animation:none;}}
 .wizard-panel{min-height:260px;}
 .wpick-grid{display:grid;gap:1rem;grid-template-columns:1fr;}
 @media(min-width:640px){.wpick-grid{grid-template-columns:1fr 1fr;}}
@@ -673,8 +723,8 @@ footer{background:#3d2410;}
 .wpick .w-name{font-family:var(--font-serif);font-style:italic;font-size:1.2rem;font-weight:600;color:var(--w-accent,var(--text));}
 .wpick .w-badge{font-family:"JetBrains Mono",monospace;font-size:.66rem;letter-spacing:.06em;text-transform:uppercase;color:var(--text-faint);}
 .wizard-listen{display:flex;flex-direction:column;gap:1.3rem;align-items:center;text-align:center;}
-.wizard-listen .w-title{font-family:var(--font-serif);font-style:italic;font-size:1.6rem;font-weight:600;}
-.wiz-timer{font-size:1.5rem;font-weight:700;color:var(--adlucem);letter-spacing:.02em;}
+.wizard-listen .w-title{font-family:var(--font-serif);font-style:italic;font-size:1.9rem;font-weight:600;}
+.wiz-timer{font-size:1.6rem;font-weight:700;color:var(--adlucem);letter-spacing:.02em;}
 .wizard-back{align-self:flex-start;font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;color:var(--text-faint);transition:color .3s;}
 .wizard-back:hover{color:var(--text);}
 .wizard-confirm{text-align:center;display:flex;flex-direction:column;align-items:center;gap:1rem;padding:1rem 0;}
@@ -704,22 +754,22 @@ footer{background:#3d2410;}
   max-width:520px;margin:0 auto;display:flex;flex-direction:column;gap:1.4rem;
   border:1px solid var(--line);border-radius:3px;padding:clamp(1.6rem,2.6vw,2.2rem);background:var(--bg-card);
 }
-.profile-lede{color:var(--text-dim);font-size:.88rem;line-height:1.6;}
+.profile-lede{color:var(--text-dim);font-size:1.02rem;line-height:1.65;text-align:justify;}
 .profile-field{display:flex;flex-direction:column;gap:.6rem;}
-.profile-label{font-family:"JetBrains Mono",monospace;font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;color:var(--text-faint);}
+.profile-label{font-family:"JetBrains Mono",monospace;font-size:.98rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--neon);}
 .profile-options{display:flex;flex-wrap:wrap;gap:.6rem;}
 .profile-opt{
-  padding:.5rem 1.1rem;border:1px solid var(--line-strong);border-radius:100px;
-  font-size:.8rem;color:var(--text-dim);transition:background .3s,color .3s,border-color .3s;
+  padding:.55rem 1.2rem;border:1px solid var(--line-strong);border-radius:100px;
+  font-size:.92rem;color:var(--text-dim);transition:background .3s,color .3s,border-color .3s;
 }
 .profile-opt:hover{border-color:var(--adlucem);color:var(--text);}
 .profile-opt.sel{background:var(--adlucem);border-color:var(--adlucem);color:#1a1006;font-weight:600;}
 .profile-age-input{
-  margin-top:.2rem;max-width:220px;padding:.6rem .8rem;font-size:.85rem;min-height:auto;
+  margin-top:.2rem;max-width:220px;padding:.65rem .85rem;font-size:.95rem;min-height:auto;
   background:var(--bg-soft);border:1px solid var(--line);border-radius:2px;color:var(--text);
 }
 .profile-select{
-  max-width:320px;width:100%;padding:.6rem .8rem;font-size:.85rem;
+  max-width:320px;width:100%;padding:.65rem .85rem;font-size:.95rem;
   background:var(--bg-soft);border:1px solid var(--line);border-radius:2px;color:var(--text);
   font-family:"Kanit",sans-serif;font-weight:300;transition:border-color .3s;
 }
@@ -735,7 +785,7 @@ footer{background:#3d2410;}
 textarea.pinput{
   width:100%;min-height:96px;resize:vertical;
   background:var(--bg-soft);border:1px solid var(--line);border-radius:2px;
-  color:var(--text);padding:.85rem 1rem;font-family:"Kanit",sans-serif;font-weight:300;font-size:.95rem;
+  color:var(--text);padding:.9rem 1.05rem;font-family:"Kanit",sans-serif;font-weight:300;font-size:1.05rem;
   transition:border-color .3s;
 }
 textarea.pinput:focus{outline:none;border-color:var(--wc-accent,var(--accent));box-shadow:0 0 0 3px color-mix(in srgb, var(--wc-accent,var(--accent)) 18%, transparent);}
@@ -743,16 +793,16 @@ textarea.pinput:focus{outline:none;border-color:var(--wc-accent,var(--accent));b
 .pinput:disabled{opacity:.4;cursor:not-allowed;}
 .pinput.pinput-live{min-height:56px;}
 .wiz-live-words{display:flex;flex-wrap:wrap;gap:.5rem;justify-content:center;max-width:520px;}
-.live-word-chip{background:var(--bg-soft);border:1px solid var(--line);border-radius:100px;padding:.3rem .9rem;font-size:.8rem;font-family:"JetBrains Mono",monospace;color:var(--text-dim);}
+.live-word-chip{background:var(--bg-soft);border:1px solid var(--line);border-radius:100px;padding:.35rem 1rem;font-size:.9rem;font-family:"JetBrains Mono",monospace;color:var(--text-dim);}
 .psubmit{
   align-self:flex-start;
-  padding:.75rem 1.6rem;border:1px solid var(--line-strong);border-radius:100px;
-  font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;
+  padding:.8rem 1.7rem;border:1px solid var(--line-strong);border-radius:100px;
+  font-size:.88rem;letter-spacing:.1em;text-transform:uppercase;
   transition:background .3s,color .3s,border-color .3s,box-shadow .3s;
 }
 .psubmit:hover{background:var(--wc-accent,var(--text));color:#090909;border-color:var(--wc-accent,var(--text));box-shadow:0 0 32px -8px var(--wc-accent,transparent);}
 .psubmit:disabled{opacity:.4;cursor:not-allowed;}
-.p-feedback{font-size:.8rem;color:var(--adlucem);font-family:"JetBrains Mono",monospace;min-height:1.2em;}
+.p-feedback{font-size:.9rem;color:var(--adlucem);font-family:"JetBrains Mono",monospace;min-height:1.2em;}
 .p-counter{
   margin-top:clamp(2.5rem,4vw,3.5rem);
   text-align:center;color:var(--text-faint);font-family:"JetBrains Mono",monospace;font-size:.82rem;
@@ -784,12 +834,12 @@ textarea.pinput:focus{outline:none;border-color:var(--wc-accent,var(--accent));b
 .tfg-panel{
   display:grid;gap:clamp(2rem,4vw,3.5rem);
   grid-template-columns:1fr;
-  border:1px solid var(--line);border-radius:3px;
+  border:1px solid var(--adlucem);border-radius:3px;
   padding:clamp(1.8rem,4vw,3.2rem);
   background:linear-gradient(160deg,var(--bg-card),var(--bg-soft));
 }
 @media(min-width:960px){.tfg-panel{grid-template-columns:1.1fr .9fr;}}
-.tfg-summary p{color:var(--text-dim);line-height:1.75;font-size:.98rem;font-weight:300;}
+.tfg-summary p{color:var(--text-dim);line-height:1.75;font-size:.98rem;font-weight:300;text-align:justify;}
 .tfg-soon{margin-top:1rem;font-size:.85rem;color:var(--text-faint);font-style:italic;}
 .kw-list{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:1.3rem;}
 .kw{
@@ -845,7 +895,7 @@ textarea.pinput:focus{outline:none;border-color:var(--wc-accent,var(--accent));b
 .tl-item.in .tl-dot{background:var(--tl-accent,var(--accent));border-color:var(--tl-accent,var(--accent));box-shadow:0 0 16px var(--tl-accent,var(--accent));}
 .tl-title{font-family:var(--font-serif);font-size:clamp(1.4rem,1.15rem + .9vw,2.1rem);font-weight:600;color:var(--text-dim);transition:color .5s;}
 .tl-item.in .tl-title{color:var(--tl-accent,var(--adlucem));}
-.tl-desc{margin-top:.6rem;color:var(--text-dim);line-height:1.7;max-width:58ch;font-weight:300;font-size:.95rem;}
+.tl-desc{margin-top:.6rem;color:var(--text-dim);line-height:1.7;max-width:58ch;font-weight:300;font-size:.95rem;text-align:justify;}
 
 /* ============ FRASES DESTACADAS ============ */
 #quotes{
@@ -951,9 +1001,9 @@ footer{
       <p class="hero-tagline">¿Puede una melodía convertirse en palabras?</p>
       <p class="hero-tagline">Un proyecto sobre música, lenguaje y significado.</p>
       <div class="hero-cta">
+        <a href="#participa" class="hero-btn hero-btn-highlight">Participar</a>
         <a href="#obras" class="hero-btn hero-btn-primary">▶ Escuchar el EP →</a>
         <a href="#metodologia" class="hero-btn hero-btn-primary">Investigación</a>
-        <a href="#participa" class="hero-btn hero-btn-primary">Participar</a>
       </div>
     </div>
   </div>
@@ -1087,7 +1137,7 @@ footer{
   <div class="container">
     <div class="section-head">
       <h2 class="section-title grad-title" data-split-words>Participar</h2>
-      <p class="section-lede" data-split-words>Elige una composición, escúchala unos segundos y escribe con libertad las palabras, emociones o imágenes que te sugiera. Tu respuesta se suma, en directo, al atlas léxico de la investigación.</p>
+      <p class="section-lede" data-split-words>Vas a escuchar las cuatro composiciones, una tras otra, y escribir con libertad las palabras, emociones o imágenes que te sugieran: en dos de ellas mientras suena la música, y en las otras dos justo después. Tus respuestas se suman, en directo, al atlas léxico de la investigación.</p>
     </div>
     <div class="wizard" id="wizard">
       <div class="wizard-steps mono" id="wizard-steps"></div>
@@ -1486,6 +1536,31 @@ const FOOTER_LINKS = [
 /* código ISO2 -> [lat, lon, nombre en español] (posición aproximada, capital del país) */
 const COUNTRY_META={AF:[34.5553,69.2075,"Afganistán"],AL:[41.3275,19.8187,"Albania"],DE:[52.52,13.405,"Alemania"],AD:[42.5063,1.5218,"Andorra"],AO:[-8.839,13.2894,"Angola"],SA:[24.7136,46.6753,"Arabia Saudí"],DZ:[36.7538,3.0588,"Argelia"],AR:[-34.6037,-58.3816,"Argentina"],AM:[40.1792,44.4991,"Armenia"],AU:[-35.2809,149.13,"Australia"],AT:[48.2082,16.3738,"Austria"],AZ:[40.4093,49.8671,"Azerbaiyán"],BS:[25.0343,-77.3963,"Bahamas"],BD:[23.8103,90.4125,"Bangladés"],BB:[13.1132,-59.5988,"Barbados"],BH:[26.2285,50.586,"Baréin"],BE:[50.8503,4.3517,"Bélgica"],BZ:[17.1899,-88.4976,"Belice"],BJ:[6.4969,2.6289,"Benín"],BY:[53.9006,27.559,"Bielorrusia"],MM:[19.7633,96.0785,"Birmania"],BO:[-16.4897,-68.1193,"Bolivia"],BA:[43.8563,18.4131,"Bosnia y Herzegovina"],BW:[-24.6282,25.9231,"Botsuana"],BR:[-15.7939,-47.8828,"Brasil"],BN:[4.9031,114.9398,"Brunéi"],BG:[42.6977,23.3219,"Bulgaria"],BF:[12.3714,-1.5197,"Burkina Faso"],BI:[-3.3822,29.3644,"Burundi"],BT:[27.4728,89.639,"Bután"],CV:[14.933,-23.5133,"Cabo Verde"],KH:[11.5564,104.9282,"Camboya"],CM:[3.848,11.5021,"Camerún"],CA:[45.4215,-75.6972,"Canadá"],QA:[25.2854,51.531,"Catar"],TD:[12.1348,15.0557,"Chad"],CL:[-33.4489,-70.6693,"Chile"],CN:[39.9042,116.4074,"China"],CY:[35.1856,33.3823,"Chipre"],VA:[41.9029,12.4534,"Ciudad del Vaticano"],CO:[4.711,-74.0721,"Colombia"],KM:[-11.7172,43.2473,"Comoras"],KP:[39.0392,125.7625,"Corea del Norte"],KR:[37.5665,126.978,"Corea del Sur"],CR:[9.9281,-84.0907,"Costa Rica"],CI:[6.8276,-5.2893,"Costa de Marfil"],HR:[45.815,15.9819,"Croacia"],CU:[23.1136,-82.3666,"Cuba"],DK:[55.6761,12.5683,"Dinamarca"],EC:[-0.1807,-78.4678,"Ecuador"],EG:[30.0444,31.2357,"Egipto"],SV:[13.6929,-89.2182,"El Salvador"],AE:[24.4539,54.3773,"Emiratos Árabes Unidos"],ER:[15.3229,38.9251,"Eritrea"],SK:[48.1486,17.1077,"Eslovaquia"],SI:[46.0569,14.5058,"Eslovenia"],ES:[40.4168,-3.7038,"España"],US:[38.9072,-77.0369,"Estados Unidos"],EE:[59.437,24.7536,"Estonia"],SZ:[-26.3054,31.1367,"Esuatini"],ET:[9.03,38.74,"Etiopía"],PH:[14.5995,120.9842,"Filipinas"],FI:[60.1699,24.9384,"Finlandia"],FJ:[-18.1416,178.4419,"Fiyi"],FR:[48.8566,2.3522,"Francia"],GA:[0.4162,9.4673,"Gabón"],GM:[13.4549,-16.579,"Gambia"],GE:[41.7151,44.8271,"Georgia"],GH:[5.6037,-0.187,"Ghana"],GR:[37.9838,23.7275,"Grecia"],GT:[14.6349,-90.5069,"Guatemala"],GN:[9.6412,-13.5784,"Guinea"],GQ:[3.7504,8.7371,"Guinea Ecuatorial"],GW:[11.8636,-15.5977,"Guinea-Bisáu"],GY:[6.8013,-58.1551,"Guyana"],HT:[18.5944,-72.3074,"Haití"],HN:[14.0723,-87.1921,"Honduras"],HU:[47.4979,19.0402,"Hungría"],IN:[28.6139,77.209,"India"],ID:[-6.2088,106.8456,"Indonesia"],IQ:[33.3152,44.3661,"Irak"],IR:[35.6892,51.389,"Irán"],IE:[53.3498,-6.2603,"Irlanda"],IS:[64.1466,-21.9426,"Islandia"],MH:[7.1164,171.1858,"Islas Marshall"],SB:[-9.428,159.9498,"Islas Salomón"],IL:[31.7683,35.2137,"Israel"],IT:[41.9028,12.4964,"Italia"],JM:[18.0179,-76.8099,"Jamaica"],JP:[35.6762,139.6503,"Japón"],JO:[31.9454,35.9284,"Jordania"],KZ:[51.1694,71.4491,"Kazajistán"],KE:[-1.2864,36.8172,"Kenia"],KG:[42.8746,74.5698,"Kirguistán"],KI:[1.3291,172.979,"Kiribati"],XK:[42.6629,21.1655,"Kosovo"],KW:[29.3759,47.9774,"Kuwait"],LA:[17.9757,102.6331,"Laos"],LS:[-29.3151,27.4869,"Lesoto"],LV:[56.9496,24.1052,"Letonia"],LB:[33.8938,35.5018,"Líbano"],LR:[6.3004,-10.7969,"Liberia"],LY:[32.8872,13.1913,"Libia"],LI:[47.166,9.5554,"Liechtenstein"],LT:[54.6872,25.2797,"Lituania"],LU:[49.6116,6.1319,"Luxemburgo"],MK:[41.9981,21.4254,"Macedonia del Norte"],MG:[-18.8792,47.5079,"Madagascar"],MY:[3.139,101.6869,"Malasia"],MW:[-13.9626,33.7741,"Malaui"],MV:[4.1755,73.5093,"Maldivas"],ML:[12.6392,-8.0029,"Malí"],MT:[35.8989,14.5146,"Malta"],MA:[34.0209,-6.8416,"Marruecos"],MU:[-20.1609,57.5012,"Mauricio"],MR:[18.0735,-15.9582,"Mauritania"],MX:[19.4326,-99.1332,"México"],FM:[6.9248,158.1611,"Micronesia"],MD:[47.0105,28.8638,"Moldavia"],MC:[43.7384,7.4246,"Mónaco"],MN:[47.8864,106.9057,"Mongolia"],ME:[42.4304,19.2594,"Montenegro"],MZ:[-25.9692,32.5732,"Mozambique"],NA:[-22.5609,17.0658,"Namibia"],NR:[-0.5228,166.9315,"Nauru"],NP:[27.7172,85.324,"Nepal"],NI:[12.115,-86.2362,"Nicaragua"],NE:[13.5127,2.1128,"Níger"],NG:[9.0765,7.3986,"Nigeria"],NO:[59.9139,10.7522,"Noruega"],NZ:[-41.2865,174.7762,"Nueva Zelanda"],OM:[23.5859,58.4059,"Omán"],NL:[52.3676,4.9041,"Países Bajos"],PK:[33.6844,73.0479,"Pakistán"],PW:[7.5006,134.6242,"Palaos"],PS:[31.9522,35.2332,"Palestina"],PA:[8.9824,-79.5199,"Panamá"],PG:[-9.4438,147.1803,"Papúa Nueva Guinea"],PY:[-25.2637,-57.5759,"Paraguay"],PE:[-12.0464,-77.0428,"Perú"],PL:[52.2297,21.0122,"Polonia"],PT:[38.7223,-9.1393,"Portugal"],PR:[18.4655,-66.1057,"Puerto Rico"],GB:[51.5074,-0.1278,"Reino Unido"],CF:[4.3947,18.5582,"República Centroafricana"],CZ:[50.0755,14.4378,"República Checa"],CD:[-4.4419,15.2663,"República Democrática del Congo"],DO:[18.4861,-69.9312,"República Dominicana"],CG:[-4.2634,15.2429,"República del Congo"],RW:[-1.9403,30.0619,"Ruanda"],RO:[44.4268,26.1025,"Rumanía"],RU:[55.7558,37.6173,"Rusia"],WS:[-13.8506,-171.7513,"Samoa"],SM:[43.9424,12.4578,"San Marino"],ST:[0.3365,6.7273,"Santo Tomé y Príncipe"],SN:[14.7167,-17.4677,"Senegal"],RS:[44.7866,20.4489,"Serbia"],SC:[-4.6191,55.4513,"Seychelles"],SL:[8.4657,-13.2317,"Sierra Leona"],SG:[1.3521,103.8198,"Singapur"],SY:[33.5138,36.2765,"Siria"],SO:[2.0469,45.3182,"Somalia"],LK:[6.9271,79.8612,"Sri Lanka"],ZA:[-25.7479,28.2293,"Sudáfrica"],SD:[15.5007,32.5599,"Sudán"],SS:[4.8594,31.5713,"Sudán del Sur"],SE:[59.3293,18.0686,"Suecia"],CH:[46.948,7.4474,"Suiza"],SR:[5.852,-55.2038,"Surinam"],TH:[13.7563,100.5018,"Tailandia"],TW:[25.033,121.5654,"Taiwán"],TZ:[-6.163,35.7516,"Tanzania"],TJ:[38.5598,68.787,"Tayikistán"],TL:[-8.5569,125.5603,"Timor Oriental"],TG:[6.1725,1.2314,"Togo"],TO:[-21.1789,-175.1982,"Tonga"],TT:[10.6549,-61.5019,"Trinidad y Tobago"],TN:[36.8065,10.1815,"Túnez"],TM:[37.9601,58.3261,"Turkmenistán"],TR:[39.9334,32.8597,"Turquía"],TV:[-8.5211,179.1983,"Tuvalu"],UA:[50.4501,30.5234,"Ucrania"],UG:[0.3476,32.5825,"Uganda"],UY:[-34.9011,-56.1645,"Uruguay"],UZ:[41.2995,69.2401,"Uzbekistán"],VU:[-17.7333,168.3273,"Vanuatu"],VE:[10.4806,-66.9036,"Venezuela"],VN:[21.0278,105.8342,"Vietnam"],YE:[15.3694,44.191,"Yemen"],DJ:[11.8251,42.5903,"Yibuti"],ZM:[-15.3875,28.3228,"Zambia"],ZW:[-17.8252,31.0335,"Zimbabue"]};
 
+/* Comunidades autónomas y provincias de España, para el desplegable
+   encadenado del formulario de participación (solo se usa si el país
+   elegido es España; para el resto de países se pide en texto libre). */
+const CCAA_PROVINCIAS={
+  "Andalucía":["Almería","Cádiz","Córdoba","Granada","Huelva","Jaén","Málaga","Sevilla"],
+  "Aragón":["Huesca","Teruel","Zaragoza"],
+  "Principado de Asturias":["Asturias"],
+  "Illes Balears":["Illes Balears"],
+  "Canarias":["Las Palmas","Santa Cruz de Tenerife"],
+  "Cantabria":["Cantabria"],
+  "Castilla-La Mancha":["Albacete","Ciudad Real","Cuenca","Guadalajara","Toledo"],
+  "Castilla y León":["Ávila","Burgos","León","Palencia","Salamanca","Segovia","Soria","Valladolid","Zamora"],
+  "Cataluña":["Barcelona","Girona","Lleida","Tarragona"],
+  "Extremadura":["Badajoz","Cáceres"],
+  "Galicia":["A Coruña","Lugo","Ourense","Pontevedra"],
+  "Comunidad de Madrid":["Madrid"],
+  "Región de Murcia":["Murcia"],
+  "Comunidad Foral de Navarra":["Navarra"],
+  "País Vasco":["Araba/Álava","Bizkaia","Gipuzkoa"],
+  "La Rioja":["La Rioja"],
+  "Comunitat Valenciana":["Alicante/Alacant","Castellón/Castelló","Valencia/València"],
+  "Ceuta":["Ceuta"],
+  "Melilla":["Melilla"]
+};
+
 /* ---------- utilidades ---------- */
 const $ = (s,ctx=document)=>ctx.querySelector(s);
 const $$ = (s,ctx=document)=>Array.from(ctx.querySelectorAll(s));
@@ -1630,7 +1705,18 @@ const StateStore = (function(){
      (código + variables sociodemográficas codificadas), su leyenda en
      "Variables", y una hoja por pieza (Abyssus, Ad_lucem, Vortex,
      Transmutatio) donde la fila N es el mismo informante que la fila N
-     de "Informantes" — en blanco si esa persona no participó en esa pieza. */
+     de "Informantes" — en blanco si esa persona no participó en esa pieza.
+
+     IMPORTANTE: desde que cada participación cubre las cuatro piezas (un
+     documento de Firestore por pieza, los cuatro con el mismo sessionId),
+     hay que AGRUPAR por sessionId antes de construir estas hojas. Si no,
+     cada persona real saldría hasta 4 veces en "Informantes" (una fila por
+     pieza) con sus palabras repartidas en filas sueltas en vez de
+     alineadas con el resto de piezas de esa misma persona — que es
+     justo el tipo de fallo que hacía que al exportar no aparecieran
+     realmente las palabras de la gente. Los envíos antiguos sin
+     sessionId (de antes de este cambio, una pieza suelta por envío) se
+     tratan cada uno como su propio informante, para no perder esos datos. */
   const LEXPRO_PIECES = [
     {id:"abyssus", sheet:"Abyssus"},
     {id:"adlucem", sheet:"Ad_lucem"},
@@ -1641,6 +1727,29 @@ const StateStore = (function(){
   const LEXPRO_AGE_CODE = {"10-13":1, "14-19":2, "20-34":3, "35-54":4, "55-64":5, "65+":6};
   const LEXPRO_MUSIC_CODE = {no:1, si:2};
 
+  function groupSubsBySession(allSubs){
+    const sessions = [];
+    const bySessionId = new Map();
+    allSubs.forEach(s=>{
+      if(s.sessionId){
+        let entry = bySessionId.get(s.sessionId);
+        if(!entry){
+          entry = {sessionId:s.sessionId, profile:s.profile||{}, pieces:{}};
+          bySessionId.set(s.sessionId, entry);
+          sessions.push(entry);
+        }
+        if(s.profile && Object.keys(s.profile).length) entry.profile = s.profile;
+        entry.pieces[s.work] = {words:s.words||[], modality:s.modality||"", timestamps:s.timestamps||null};
+      } else {
+        sessions.push({
+          sessionId:null, profile:s.profile||{},
+          pieces:{[s.work]:{words:s.words||[], modality:s.modality||"", timestamps:s.timestamps||null}}
+        });
+      }
+    });
+    return sessions;
+  }
+
   async function exportCSV(){
     await capReady;
     if(typeof XLSX === "undefined"){
@@ -1649,9 +1758,14 @@ const StateStore = (function(){
       return false;
     }
 
+    const sessions = groupSubsBySession(subs);
+
+    // Hojas "Informantes"/"Variables"/piezas: mismas columnas que ya se
+    // acordaron con el grupo de Salamanca, solo corregidas para que cada
+    // fila sea una persona real (no una pieza suelta).
     const informantesRows = [["CODIGO_INFORMANTE","SEXO","EDAD","PAIS","ESTUDIOS_MUSICALES"]];
-    subs.forEach((s,i)=>{
-      const p = s.profile || {};
+    sessions.forEach((entry,i)=>{
+      const p = entry.profile || {};
       const paisNombre = p.country && COUNTRY_META[p.country] ? COUNTRY_META[p.country][2] : "";
       informantesRows.push([i+1, LEXPRO_SEX_CODE[p.sex]||"", LEXPRO_AGE_CODE[p.age]||"", paisNombre, LEXPRO_MUSIC_CODE[p.music]||""]);
     });
@@ -1667,13 +1781,46 @@ const StateStore = (function(){
     ];
 
     const pieceWordRows = {};
-    LEXPRO_PIECES.forEach(pc=>{ pieceWordRows[pc.id] = subs.map(()=>[]); });
-    subs.forEach((s,i)=>{ if(pieceWordRows[s.work]) pieceWordRows[s.work][i] = (s.words||[]).slice(); });
+    LEXPRO_PIECES.forEach(pc=>{ pieceWordRows[pc.id] = sessions.map(()=>[]); });
+    sessions.forEach((entry,i)=>{
+      LEXPRO_PIECES.forEach(pc=>{
+        const piece = entry.pieces[pc.id];
+        if(piece) pieceWordRows[pc.id][i] = (piece.words||[]).slice();
+      });
+    });
+
+    // Hojas adicionales (fuera del formato estricto de LexPRO, para no
+    // tocar las columnas ya acordadas): comunidad autónoma/provincia,
+    // modalidad de cada pieza, y las marcas de tiempo por palabra de las
+    // piezas hechas en modalidad "durante" (para cruzarlas con el MIDI).
+    const ubicacionRows = [["CODIGO_INFORMANTE","PAIS","COMUNIDAD_AUTONOMA","PROVINCIA_O_REGION"]];
+    const modalidadRows = [["CODIGO_INFORMANTE","ABYSSUS","VORTEX","TRANSMUTATIO","AD_LUCEM"]];
+    const timestampRows = [];
+    const MODALIDAD_LABEL = {durante:"DURANTE", despues:"DESPUÉS"};
+    sessions.forEach((entry,i)=>{
+      const p = entry.profile || {};
+      const paisNombre = p.country && COUNTRY_META[p.country] ? COUNTRY_META[p.country][2] : "";
+      ubicacionRows.push([i+1, paisNombre, p.ccaa||"", p.province||""]);
+      modalidadRows.push([i+1].concat(["abyssus","vortex","transmutatio","adlucem"].map(id=>{
+        const piece = entry.pieces[id];
+        return piece ? (MODALIDAD_LABEL[piece.modality]||"") : "";
+      })));
+      LEXPRO_PIECES.forEach(pc=>{
+        const piece = entry.pieces[pc.id];
+        if(piece && piece.modality === "durante" && piece.timestamps && piece.timestamps.length){
+          const pairs = (piece.words||[]).map((w,wi)=> w+":"+(piece.timestamps[wi]!=null?piece.timestamps[wi]:""));
+          timestampRows.push([i+1, pc.sheet].concat(pairs));
+        }
+      });
+    });
 
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(informantesRows), "Informantes");
     XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(variablesRows), "Variables");
     LEXPRO_PIECES.forEach(pc=> XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(pieceWordRows[pc.id]), pc.sheet));
+    XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(ubicacionRows), "Ubicacion");
+    XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(modalidadRows), "Modalidad");
+    if(timestampRows.length) XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(timestampRows), "Marcas_tiempo_ms");
 
     if(claudeDownloads){
       try{
@@ -3051,7 +3198,7 @@ const WorldMap = (function(){
   function renderIntro(){
     panel.innerHTML = `
       <div class="wizard-listen">
-        <p class="profile-lede" style="max-width:520px;">Gracias. Ahora vas a escuchar las cuatro composiciones, una tras otra. En dos de ellas escribirás las palabras que te vengan a la mente mientras suena la música; en las otras dos, escucharás la pieza completa y después tendrás dos minutos para escribir. Te iremos indicando en cada momento qué toca hacer. En total, calcula unos 12-15 minutos.</p>
+        <p class="profile-lede" style="max-width:520px;">Ahora vas a escuchar las <span class="voc">cuatro composiciones</span>, una tras otra. En <span class="voc">dos de ellas</span> escribirás las palabras que te vengan a la mente <span class="voc">mientras suena la música</span>; en <span class="voc">las otras dos</span>, escucharás la pieza completa y después <span class="voc">tendrás dos minutos para escribir</span>. Te iremos indicando en cada momento qué toca hacer.</p>
         <button class="psubmit" id="wiz-start">Comenzar</button>
       </div>`;
     $("#wiz-start").addEventListener("click", ()=>{ runPiece(); });
@@ -3088,7 +3235,7 @@ const WorldMap = (function(){
     panel.innerHTML = `
       <div class="wizard-listen">
         <div class="w-title" style="color:${work.color}">${work.name}</div>
-        <p class="profile-lede" style="max-width:520px;">Escucha la pieza completa. Cuando termine, tendrás 2 minutos para escribir las palabras que te hayan venido a la mente.</p>
+        <p class="profile-lede" style="max-width:520px;">Escucha la pieza completa. Cuando termine, <span class="voc">tendrás 2 minutos para escribir</span> las palabras que te hayan venido a la mente.</p>
         <div class="p-play">
           <button class="play-btn p-play-btn" aria-label="Escuchar ${work.name}">
             <svg class="ic-play" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
@@ -3134,23 +3281,36 @@ const WorldMap = (function(){
       ta.disabled = false;
       submit.disabled = false;
       ta.focus();
-      timeEl.textContent = "Ya puedes escribir";
+      timeEl.innerHTML = '<span class="voc">Ya puedes escribir</span>';
       timerEl.hidden = false;
       timeLeft = 120;
       updateTimerText();
       countdownId = setInterval(()=>{
         timeLeft--;
         updateTimerText();
-        if(timeLeft<=0){ clearCountdown(); lockAndSubmit(); }
+        if(timeLeft<=0){ clearCountdown(); lockAndSubmit(true); }
       }, 1000);
     }
 
-    function lockAndSubmit(){
+    /* auto=true: el cronómetro ha llegado a 0 y se pasa automáticamente a lo
+       siguiente. En ese caso, si la persona se ha quedado escribiendo una
+       palabra a medias (el texto no termina en coma, punto o salto de línea,
+       que es como se indica separar cada palabra), esa última palabra sin
+       terminar no se registra: se corta justo después del último separador.
+       Si se envía a mano con el botón, se respeta tal cual lo escrito. */
+    function lockAndSubmit(auto){
       ta.disabled = true;
       submit.disabled = true;
       stopAudio(work.id);
-      const raw = ta.value.trim();
-      const words = raw.split(/[,;.\n]+/).map(w=>w.trim().toLowerCase()).filter(Boolean);
+      let raw = ta.value;
+      if(auto){
+        const trimmedEnd = raw.replace(/\s+$/,"");
+        if(trimmedEnd && !/[,;.\n]$/.test(trimmedEnd)){
+          const m = trimmedEnd.match(/^[\s\S]*[,;.\n]/);
+          raw = m ? m[0] : "";
+        }
+      }
+      const words = raw.trim().split(/[,;.\n]+/).map(w=>w.trim().toLowerCase()).filter(Boolean);
       onDone(work, "despues", words, null);
     }
 
@@ -3184,7 +3344,7 @@ const WorldMap = (function(){
     panel.innerHTML = `
       <div class="wizard-listen">
         <div class="w-title" style="color:${work.color}">${work.name}</div>
-        <p class="profile-lede" style="max-width:520px;">Pulsa para escuchar. Mientras suena la música, escribe cada palabra que te venga a la mente y pulsa Intro para añadirla.</p>
+        <p class="profile-lede" style="max-width:520px;">Pulsa para escuchar. <span class="voc">Mientras suena la música</span>, escribe cada palabra que te venga a la mente y <span class="voc">pulsa Intro para añadirla</span>.</p>
         <div class="p-play">
           <button class="play-btn p-play-btn" aria-label="Escuchar ${work.name}">
             <svg class="ic-play" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
@@ -3225,8 +3385,18 @@ const WorldMap = (function(){
        escribirla. wordStartT se reinicia a null en cuanto el campo vuelve a
        quedar vacio (al confirmar una palabra o al borrarla con backspace). */
     let wordStartT = null;
+    /* Si la canción termina mientras la persona está a mitad de escribir una
+       palabra (el campo no está vacío), no se pasa a la siguiente canción
+       todavía: se espera a que pulse Intro (o borre lo escrito) para no
+       cortarle la palabra a medias. */
+    let pendingFinish = false;
+
     input.addEventListener("input", ()=>{
-      if(input.value.length === 0){ wordStartT = null; return; }
+      if(input.value.length === 0){
+        wordStartT = null;
+        if(pendingFinish){ pendingFinish = false; finish(); }
+        return;
+      }
       if(wordStartT === null) wordStartT = ac ? (ac.currentTime - startedAt) : 0;
     });
 
@@ -3235,11 +3405,16 @@ const WorldMap = (function(){
       e.preventDefault();
       const w = input.value.trim().toLowerCase();
       input.value = "";
-      if(!w){ wordStartT = null; return; }
+      if(!w){
+        wordStartT = null;
+        if(pendingFinish){ pendingFinish = false; finish(); }
+        return;
+      }
       const t = wordStartT !== null ? wordStartT : (ac ? (ac.currentTime - startedAt) : 0);
       collected.push({word:w, t});
       wordStartT = null;
       renderWords();
+      if(pendingFinish){ pendingFinish = false; finish(); }
     });
 
     btn.addEventListener("click", ()=>{
@@ -3248,7 +3423,12 @@ const WorldMap = (function(){
       const r = AudioEngine.play(work.id, ()=>{
         resetUI();
         releasePlayback(work.id);
-        finish();
+        if(input.value.trim().length > 0){
+          pendingFinish = true;
+          timeEl.textContent = "Termina de escribir esa palabra y pulsa Intro para continuar…";
+        } else {
+          finish();
+        }
       });
       playing=true;
       ac = r.ac; startedAt = r.startedAt;
@@ -3257,19 +3437,20 @@ const WorldMap = (function(){
       btn.classList.add("playing");
       btn.querySelector(".ic-play").style.display="none";
       btn.querySelector(".ic-pause").style.display="";
-      timeEl.textContent = "Reproduciendo — "+fmtTime(r.duration)+" en total. Escribe cada palabra y pulsa Intro.";
+      timeEl.innerHTML = "Reproduciendo — "+fmtTime(r.duration)+' en total. Escribe cada palabra y <span class="voc">pulsa Intro</span>.';
     });
   }
 
   function renderProfile(){
-    let sex = null, age = null, music = null, country = null, city = "";
+    let sex = null, age = null, music = null, country = null;
+    let ccaa = null, provincia = null, locationText = "";
     const countryOptions = Object.keys(COUNTRY_META).map(code=>
       `<option value="${code}">${COUNTRY_META[code][2]}</option>`).join("");
     panel.innerHTML = `
       <div class="wizard-profile">
-        <p class="profile-lede">La participación es totalmente anónima — por eso no te pedimos nombre ni apellidos. Antes de empezar, solo te pedimos estos datos rápidos para la investigación; no se muestran en la página, solo alimentan el estudio. Responder es opcional.</p>
+        <p class="profile-lede">La participación es totalmente anónima, por lo que no te pedimos tu nombre ni apellidos. Antes de empezar, necesitamos que completes unos datos básicos para la investigación. Esta información no se mostrará en la página y se utilizará exclusivamente con fines de estudio.</p>
         <div class="profile-field">
-          <div class="profile-label">Sexo</div>
+          <div class="profile-label">Sexo *</div>
           <div class="profile-options" id="profile-sex">
             <button type="button" class="profile-opt" data-v="hombre">Hombre</button>
             <button type="button" class="profile-opt" data-v="mujer">Mujer</button>
@@ -3277,7 +3458,7 @@ const WorldMap = (function(){
           </div>
         </div>
         <div class="profile-field">
-          <div class="profile-label">Edad</div>
+          <div class="profile-label">Edad *</div>
           <div class="profile-options" id="profile-age">
             <button type="button" class="profile-opt" data-v="10-13">10–13</button>
             <button type="button" class="profile-opt" data-v="14-19">14–19</button>
@@ -3288,22 +3469,24 @@ const WorldMap = (function(){
           </div>
         </div>
         <div class="profile-field">
-          <div class="profile-label">¿Tienes estudios musicales?</div>
+          <div class="profile-label">¿Tienes estudios musicales? *</div>
           <div class="profile-options" id="profile-music">
             <button type="button" class="profile-opt" data-v="si">Sí</button>
             <button type="button" class="profile-opt" data-v="no">No</button>
           </div>
         </div>
         <div class="profile-field">
-          <div class="profile-label">País donde vives</div>
+          <div class="profile-label">País donde vives *</div>
           <select id="profile-country" class="profile-select">
-            <option value="">Prefiero no decirlo</option>
+            <option value="" disabled selected>Selecciona un país</option>
             ${countryOptions}
           </select>
         </div>
         <div class="profile-field">
-          <div class="profile-label">Ciudad</div>
-          <input type="text" id="profile-city" class="profile-age-input" style="max-width:320px;" disabled placeholder="Primero selecciona un país arriba">
+          <div class="profile-label" id="profile-location-label">Dónde vives *</div>
+          <div id="profile-location-body">
+            <input type="text" class="profile-age-input" style="max-width:320px;" disabled placeholder="Primero selecciona un país arriba">
+          </div>
         </div>
         <button class="psubmit" id="profile-submit">Empezar</button>
         <span class="p-feedback" id="profile-feedback"></span>
@@ -3322,25 +3505,75 @@ const WorldMap = (function(){
     wireGroup("profile-age", v=>age=v);
     wireGroup("profile-music", v=>music=v);
 
-    const cityInput = $("#profile-city");
-    /* Primero país, luego ciudad: el campo de ciudad permanece deshabilitado
-       hasta que se elige un país, tal y como se pidió. */
+    /* El campo de "dónde vives" cambia según el país: para España, dos
+       desplegables encadenados (comunidad autónoma y luego provincia, con
+       datos fiables y manejables); para cualquier otro país, un campo de
+       texto libre (provincia, región o ciudad), ya que mantener desplegables
+       verificados para todos los países del mundo no es viable aquí. */
+    function renderLocationField(){
+      const label = $("#profile-location-label");
+      const body = $("#profile-location-body");
+      if(country === "ES"){
+        label.textContent = "Comunidad autónoma y provincia *";
+        const ccaaOptions = Object.keys(CCAA_PROVINCIAS).map(c=>
+          `<option value="${c}" ${ccaa===c?"selected":""}>${c}</option>`).join("");
+        const provinciaOptions = ccaa ? CCAA_PROVINCIAS[ccaa].map(p=>
+          `<option value="${p}" ${provincia===p?"selected":""}>${p}</option>`).join("") : "";
+        body.innerHTML = `
+          <select id="profile-ccaa" class="profile-select" style="margin-bottom:.6rem;">
+            <option value="" disabled ${ccaa?"":"selected"}>Selecciona una comunidad autónoma</option>
+            ${ccaaOptions}
+          </select>
+          <select id="profile-provincia" class="profile-select" ${ccaa?"":"disabled"}>
+            <option value="" disabled selected>${ccaa?"Selecciona una provincia":"Primero elige una comunidad autónoma"}</option>
+            ${provinciaOptions}
+          </select>`;
+        $("#profile-ccaa").addEventListener("change", (e)=>{
+          ccaa = e.target.value || null;
+          provincia = null;
+          renderLocationField();
+        });
+        const provSel = $("#profile-provincia");
+        if(provSel){
+          provSel.addEventListener("change", (e)=>{ provincia = e.target.value || null; });
+        }
+      } else if(country){
+        label.textContent = "Provincia, región o ciudad donde resides *";
+        body.innerHTML = `<input type="text" id="profile-location-text" class="profile-age-input" style="max-width:320px;" placeholder="Escribe tu provincia, región o ciudad">`;
+        const txt = $("#profile-location-text");
+        txt.value = locationText;
+        txt.addEventListener("input", (e)=>{ locationText = e.target.value; });
+      } else {
+        label.textContent = "Dónde vives *";
+        body.innerHTML = `<input type="text" class="profile-age-input" style="max-width:320px;" disabled placeholder="Primero selecciona un país arriba">`;
+      }
+    }
+
     $("#profile-country").addEventListener("change", (e)=>{
       country = e.target.value || null;
-      if(country){
-        cityInput.disabled = false;
-        cityInput.placeholder = "Escribe tu ciudad";
-      } else {
-        cityInput.disabled = true;
-        cityInput.value = "";
-        city = "";
-        cityInput.placeholder = "Primero selecciona un país arriba";
-      }
+      ccaa = null; provincia = null; locationText = "";
+      renderLocationField();
     });
-    cityInput.addEventListener("input", (e)=>{ city = e.target.value; });
 
     $("#profile-submit").addEventListener("click", ()=>{
-      profileData = {sex, age, music, country, city: city.trim() || null};
+      const fb = $("#profile-feedback");
+      if(!sex){ fb.textContent = "Selecciona tu sexo."; return; }
+      if(!age){ fb.textContent = "Selecciona tu edad."; return; }
+      if(!music){ fb.textContent = "Indica si tienes estudios musicales."; return; }
+      if(!country){ fb.textContent = "Selecciona un país."; return; }
+      if(country === "ES"){
+        if(!ccaa){ fb.textContent = "Selecciona una comunidad autónoma."; return; }
+        if(!provincia){ fb.textContent = "Selecciona una provincia."; return; }
+      } else if(!locationText.trim()){
+        fb.textContent = "Escribe tu provincia, región o ciudad.";
+        return;
+      }
+      fb.textContent = "";
+      profileData = {
+        sex, age, music, country,
+        ccaa: country==="ES" ? ccaa : null,
+        province: country==="ES" ? provincia : locationText.trim()
+      };
       profileCollected = true;
       renderSteps();
       renderIntro();

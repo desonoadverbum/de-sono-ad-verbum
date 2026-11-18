@@ -1,3 +1,5 @@
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
@@ -989,6 +991,19 @@ footer{
 .vh-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);}
 @media (prefers-reduced-motion: reduce){
   *{animation-duration:.001ms !important;animation-iteration-count:1 !important;transition-duration:.001ms !important;scroll-behavior:auto !important;}
+}
+
+/* Letra más grande en móvil: como todos los tamaños de texto de la web
+   están en rem (incluidos los clamp() de los títulos) y no en píxeles
+   fijos, basta con subir el tamaño de la fuente raíz para que todo el
+   texto -- y también los huecos entre elementos que usan rem, como el
+   espacio entre las tarjetas del EP -- crezca de forma proporcional en
+   pantallas pequeñas, sin tener que tocar cada estilo uno a uno. */
+@media(max-width:760px){
+  html{font-size:112.5%;} /* ~18px en vez de 16px */
+}
+@media(max-width:400px){
+  html{font-size:106.25%;} /* un pelín menos en los móviles más estrechos, para que no se desborde nada */
 }
 </style>
 

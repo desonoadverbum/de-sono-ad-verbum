@@ -173,6 +173,34 @@ html,body{
   color:var(--text-faint);border:1px solid var(--line-strong);border-radius:100px;padding:.25rem .7rem .25rem .6rem;
 }
 .nav-badge::before{content:"";width:5px;height:5px;border-radius:50%;background:var(--adlucem);display:inline-block;}
+/* Selector de idioma: resaltado igual que el CTA de "Participar" (mismo
+   naranja, mismo pulso), porque queremos que se note nada más entrar en
+   la página, justo debajo del título, no escondido como una opción más. */
+.nav-lang{
+  display:inline-flex;align-items:center;gap:.45rem;
+  background:var(--adlucem);color:#1a1006;
+  border-radius:100px;padding:.3rem .45rem .3rem .75rem;
+  box-shadow:0 0 0 1px rgba(255,193,94,.5),0 10px 26px -8px rgba(255,193,94,.8);
+  animation:heroCtaGlow 2.6s ease-in-out infinite;
+  cursor:pointer;transition:transform .3s var(--ease-out);
+}
+.nav-lang:hover{transform:translateY(-1px);}
+.nav-lang-label{
+  font-family:"JetBrains Mono",monospace;font-size:.6rem;letter-spacing:.06em;text-transform:uppercase;
+  font-weight:700;white-space:nowrap;
+}
+.lang-switch{
+  appearance:none;-webkit-appearance:none;-moz-appearance:none;
+  background-color:rgba(26,16,6,.16);color:#1a1006;font-weight:700;
+  border:none;border-radius:100px;
+  font-family:"JetBrains Mono",monospace;font-size:.68rem;letter-spacing:.03em;
+  padding:.22rem 1.4rem .22rem .55rem;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 6'><path d='M0 0l5 6 5-6z' fill='%231a1006'/></svg>");
+  background-repeat:no-repeat;background-position:right .5rem center;background-size:8px 5px;
+  cursor:pointer;
+}
+.lang-switch:focus-visible{outline:2px solid #1a1006;outline-offset:2px;}
+@media(prefers-reduced-motion:reduce){.nav-lang{animation:none;}}
 .nav-links{display:none;gap:clamp(1.2rem,2vw,2.2rem);}
 @media(min-width:860px){.nav-links{display:flex;}}
 .nav-links a{
@@ -971,17 +999,24 @@ footer{
 <nav id="nav">
   <div class="nav-left">
     <a href="#hero" class="nav-mark"><span class="nav-icon"></span>De Sono Ad Verbum</a>
-    <span class="nav-badge">● Proyecto interdisciplinar</span>
+    <label class="nav-lang" for="lang-switch">
+      <span class="nav-lang-label">Idioma · Language</span>
+      <select id="lang-switch" class="lang-switch" aria-label="Idioma / Language / Langue">
+        <option value="es">ES</option>
+        <option value="en">EN</option>
+        <option value="fr">FR</option>
+      </select>
+    </label>
   </div>
   <div class="nav-links">
-    <a href="#proyecto">Introducción</a>
-    <a href="#cronologia">Cronología</a>
-    <a href="#obras">EP</a>
-    <a href="#metodologia">Investigación</a>
-    <a href="#resultados">Atlas</a>
-    <a href="#participa">Participar</a>
-    <a href="#trabajo">TFG</a>
-    <a href="#contacto">Contacto</a>
+    <a href="#proyecto" data-i18n="nav.intro">Introducción</a>
+    <a href="#cronologia" data-i18n="nav.cronologia">Cronología</a>
+    <a href="#obras" data-i18n="nav.ep">EP</a>
+    <a href="#metodologia" data-i18n="nav.investigacion">Investigación</a>
+    <a href="#resultados" data-i18n="nav.atlas">Atlas</a>
+    <a href="#participa" data-i18n="nav.participar">Participar</a>
+    <a href="#trabajo" data-i18n="nav.tfg">TFG</a>
+    <a href="#contacto" data-i18n="nav.contacto">Contacto</a>
   </div>
 </nav>
 
@@ -997,18 +1032,18 @@ footer{
   <div class="hero-inner">
     <h1 class="hero-title" id="hero-title" aria-label="De Sono Ad Verbum">DE SONO AD VERBUM</h1>
     <div class="hero-textblock">
-      <p class="hero-sub" id="hero-sub">La activación léxica a través de la música instrumental</p>
-      <p class="hero-tagline">¿Puede una melodía convertirse en palabras?</p>
-      <p class="hero-tagline">Un proyecto sobre música, lenguaje y significado.</p>
+      <p class="hero-sub" id="hero-sub" data-i18n="hero.sub">La activación léxica a través de la música instrumental</p>
+      <p class="hero-tagline" data-i18n="hero.tagline1">¿Puede una melodía convertirse en palabras?</p>
+      <p class="hero-tagline" data-i18n="hero.tagline2">Un proyecto sobre música, lenguaje y significado.</p>
       <div class="hero-cta">
-        <a href="#participa" class="hero-btn hero-btn-highlight">Participar</a>
-        <a href="#obras" class="hero-btn hero-btn-primary">▶ Escuchar el EP →</a>
-        <a href="#metodologia" class="hero-btn hero-btn-primary">Investigación</a>
+        <a href="#participa" class="hero-btn hero-btn-highlight" data-i18n="hero.btnParticipar">Participar</a>
+        <a href="#obras" class="hero-btn hero-btn-primary" data-i18n="hero.btnEscuchar">▶ Escuchar el EP →</a>
+        <a href="#metodologia" class="hero-btn hero-btn-primary" data-i18n="hero.btnInvestigacion">Investigación</a>
       </div>
     </div>
   </div>
   <a href="#proyecto" class="hero-scroll">
-    <span>Explorar</span>
+    <span data-i18n="hero.explorar">Explorar</span>
     <span class="chevron">↓</span>
   </a>
 </section>
@@ -1017,12 +1052,12 @@ footer{
 <section id="proyecto" class="section">
   <div class="container">
     <div class="section-head">
-      <h2 class="section-title grad-title" data-split-words>Introducción</h2>
-      <p class="section-lede" data-split-words>Con motivo de un Trabajo Fin de Grado en Filología Hispánica que estudia si la música instrumental puede generar significado y traducirse en palabras, se ha creado esta página para extender el corpus lingüístico de la investigación iniciada en el IES Bahía de Almería.</p>
+      <h2 class="section-title grad-title" data-split-words data-i18n="nav.intro">Introducción</h2>
+      <p class="section-lede" data-split-words data-i18n="proyecto.lede">Con motivo de un Trabajo Fin de Grado en Filología Hispánica que estudia si la música instrumental puede generar significado y traducirse en palabras, se ha creado esta página para extender el corpus lingüístico de la investigación iniciada en el IES Bahía de Almería.</p>
     </div>
     <blockquote class="manifesto-quote reveal-line">
-      <p>«Con nosotros la música está por naturaleza conjuntada de tal manera que, ni siquiera aunque queramos, podemos estar privados de ella»</p>
-      <p class="manifesto-cite">(Boecio, 2009, p. 11)</p>
+      <p data-i18n="proyecto.quote">«Con nosotros la música está por naturaleza conjuntada de tal manera que, ni siquiera aunque queramos, podemos estar privados de ella»</p>
+      <p class="manifesto-cite" data-i18n="proyecto.quoteCite">(Boecio, 2009, p. 11)</p>
     </blockquote>
     <div class="about-grid" id="about-grid"></div>
   </div>
@@ -1032,7 +1067,7 @@ footer{
 <section id="cronologia" class="section">
   <div class="container">
     <div class="section-head">
-      <h2 class="section-title grad-title" data-split-words>Cronología</h2>
+      <h2 class="section-title grad-title" data-split-words data-i18n="cronologia.title">Cronología</h2>
     </div>
     <div class="timeline" id="timeline">
       <div class="tprogress" id="tprogress"></div>
@@ -1044,13 +1079,13 @@ footer{
 <section id="obras" class="section">
   <div class="container">
     <div class="section-head">
-      <h2 class="section-title grad-title" data-split-words>EP</h2>
-      <p class="section-lede" data-split-words>Abyssus, Vortex, Transmutatio y Ad lucem son las cuatro piezas orquestales del proyecto compositivo RA, publicadas como EP el 9 de mayo. Cada una explora una dimensión distinta del mismo viaje — de la fractura a la luz —; Abyssus y Ad lucem, sus dos polos, fueron el estímulo del estudio de campo.</p>
+      <h2 class="section-title grad-title" data-split-words data-i18n="obras.title">EP</h2>
+      <p class="section-lede" data-split-words data-i18n="obras.lede">Abyssus, Vortex, Transmutatio y Ad lucem son las cuatro piezas orquestales del proyecto compositivo RA, publicadas como EP el 9 de mayo. Cada una explora una dimensión distinta del mismo viaje — de la fractura a la luz —; Abyssus y Ad lucem, sus dos polos, fueron el estímulo del estudio de campo.</p>
     </div>
     <div class="works-grid" id="works-grid"></div>
 
     <div class="stream-block">
-      <p class="stream-label">Escúchalo en</p>
+      <p class="stream-label" data-i18n="obras.stream">Escúchalo en</p>
       <div class="stream-row">
         <a class="stream-link" href="https://open.spotify.com/intl-es/album/59zc5iwuX485yvTVKoKG5t" target="_blank" rel="noopener">
           <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -1089,7 +1124,7 @@ footer{
       </div>
     </div>
 
-    <p class="ra-note">El nombre del proyecto, <i class="lat-term">RA</i>, no es casual. La <span class="ra-letter">R</span> es la inicial de Rocío, autora del TFG y del EP; la <span class="ra-letter">A</span> es, a la vez, la inicial y la letra final de los nombres de las personas a quienes están dedicados ambos. Juntas, <span class="ra-letter">R</span> y <span class="ra-letter">A</span> forman <i class="lat-term">RA</i>. Dicho encuentro no es solo un juego de iniciales: Ra es también la deidad solar de la mitología egipcia, de la creación y de la luz, considerado el rey supremo del cosmos y el creador de toda la vida. De ahí nace el sol que preside la portada del EP y esta misma página, con las letras RA en su centro. Así pues, el nombre entrelaza lo personal y lo simbólico: la luz que da nombre y que ilumina, poco a poco, el tránsito desde una especie de oscuridad a la claridad que atraviesa todo el trabajo.</p>
+    <p class="ra-note" data-i18n-html="obras.raNote">El nombre del proyecto, <i class="lat-term">RA</i>, no es casual. La <span class="ra-letter">R</span> es la inicial de Rocío, autora del TFG y del EP; la <span class="ra-letter">A</span> es, a la vez, la inicial y la letra final de los nombres de las personas a quienes están dedicados ambos. Juntas, <span class="ra-letter">R</span> y <span class="ra-letter">A</span> forman <i class="lat-term">RA</i>. Dicho encuentro no es solo un juego de iniciales: Ra es también la deidad solar de la mitología egipcia, de la creación y de la luz, considerado el rey supremo del cosmos y el creador de toda la vida. De ahí nace el sol que preside la portada del EP y esta misma página, con las letras RA en su centro. Así pues, el nombre entrelaza lo personal y lo simbólico: la luz que da nombre y que ilumina, poco a poco, el tránsito desde una especie de oscuridad a la claridad que atraviesa todo el trabajo.</p>
   </div>
 </section>
 
@@ -1097,8 +1132,8 @@ footer{
 <section id="metodologia" class="section">
   <div class="container">
     <div class="section-head">
-      <h2 class="section-title grad-title" data-split-words>Investigación</h2>
-      <p class="section-lede" data-split-words>Una investigación interdisciplinar que cruza filología, semiótica musical, cognición y disponibilidad léxica, y que lleva la teoría a la palabra escrita a través de un estudio de campo realizado en el IES Bahía de Almería con 54 estudiantes de Educación Secundaria.</p>
+      <h2 class="section-title grad-title" data-split-words data-i18n="metodologia.title">Investigación</h2>
+      <p class="section-lede" data-split-words data-i18n="metodologia.lede">Una investigación interdisciplinar que cruza filología, semiótica musical, cognición y disponibilidad léxica, y que lleva la teoría a la palabra escrita a través de un estudio de campo realizado en el IES Bahía de Almería con 54 estudiantes de Educación Secundaria.</p>
     </div>
     <div class="about-grid research-grid" id="research-grid"></div>
     <div class="method-track" id="method-track"></div>
@@ -1109,8 +1144,8 @@ footer{
 <section id="resultados" class="section">
   <div class="container">
     <div class="section-head">
-      <h2 class="section-title grad-title" data-split-words>Atlas léxico</h2>
-      <p class="section-lede" data-split-words>96 vocablos y 311 palabras surgieron tras escuchar Abyssus en el estudio original; 113 vocablos y 323 palabras, tras Ad lucem. Esta sección representa la dimensión viva del proyecto: la investigación comenzó aquí, pero la intención es que el atlas siga creciendo con cada persona que participe, para las cuatro composiciones.</p>
+      <h2 class="section-title grad-title" data-split-words data-i18n="resultados.title">Atlas léxico</h2>
+      <p class="section-lede" data-split-words data-i18n="resultados.lede">96 vocablos y 311 palabras surgieron tras escuchar Abyssus en el estudio original; 113 vocablos y 323 palabras, tras Ad lucem. Esta sección representa la dimensión viva del proyecto: la investigación comenzó aquí, pero la intención es que el atlas siga creciendo con cada persona que participe, para las cuatro composiciones.</p>
     </div>
     <div class="stats-strip" id="stats-strip"></div>
     <div class="cloud-controls" id="cloud-controls"></div>
@@ -1118,17 +1153,17 @@ footer{
       <canvas id="wordcloud"></canvas>
       <div class="cloud-card" id="cloud-card"></div>
     </div>
-    <p class="cloud-hint">Pasa el ratón para ampliar una palabra · pulsa para ver su ficha</p>
+    <p class="cloud-hint" data-i18n="resultados.cloudHint">Pasa el ratón para ampliar una palabra · pulsa para ver su ficha</p>
 
     <div class="map-head">
-      <h3 class="map-title grad-title">Procedencia de las participaciones</h3>
-      <p class="map-sub">El territorio de cada país se enciende en amarillo y naranja con las personas que han participado desde allí. Arrastra el globo para girarlo y pasa el ratón por encima de una región iluminada para ver cuántas participaciones hay.</p>
+      <h3 class="map-title grad-title" data-i18n="resultados.mapTitle">Procedencia de las participaciones</h3>
+      <p class="map-sub" data-i18n="resultados.mapSub">El territorio de cada país se enciende en amarillo y naranja con las personas que han participado desde allí. Arrastra el globo para girarlo y pasa el ratón por encima de una región iluminada para ver cuántas participaciones hay.</p>
     </div>
     <div class="map-wrap" id="map-wrap">
       <canvas id="worldmap"></canvas>
       <div class="map-tip" id="map-tip"></div>
     </div>
-    <button class="export-btn mono" id="export-btn" type="button">↓ Exportar datos del atlas (LexPRO)</button>
+    <button class="export-btn mono" id="export-btn" type="button" data-i18n="resultados.exportBtn">↓ Exportar datos del atlas (LexPRO)</button>
   </div>
 </section>
 
@@ -1136,8 +1171,8 @@ footer{
 <section id="participa" class="section">
   <div class="container">
     <div class="section-head">
-      <h2 class="section-title grad-title" data-split-words>Participar</h2>
-      <p class="section-lede" data-split-words>Vas a escuchar las cuatro composiciones, una tras otra, y escribir con libertad las palabras, emociones o imágenes que te sugieran: en dos de ellas mientras suena la música, y en las otras dos justo después. Tus respuestas se suman, en directo, al atlas léxico de la investigación.</p>
+      <h2 class="section-title grad-title" data-split-words data-i18n="participa.title">Participar</h2>
+      <p class="section-lede" data-split-words data-i18n="participa.lede">Vas a escuchar las cuatro composiciones, una tras otra, y escribir con libertad las palabras, emociones o imágenes que te sugieran: en dos de ellas mientras suena la música, y en las otras dos justo después. Tus respuestas se suman, en directo, al atlas léxico de la investigación.</p>
     </div>
     <div class="wizard" id="wizard">
       <div class="wizard-steps mono" id="wizard-steps"></div>
@@ -1151,12 +1186,12 @@ footer{
 <section id="trabajo" class="section">
   <div class="container">
     <div class="section-head">
-      <h2 class="section-title grad-title" data-split-words>Trabajo Fin de Grado</h2>
+      <h2 class="section-title grad-title" data-split-words data-i18n="trabajo.title">Trabajo Fin de Grado</h2>
     </div>
     <div class="tfg-panel">
       <div class="tfg-summary">
-        <p>Este estudio indaga en la interrelación entre la música instrumental, la activación léxica y la construcción semántica, explorando cómo la experiencia musical puede evocar asociaciones léxicas y facilitar procesos de significación incluso en ausencia de palabras. A través de un estudio de campo con 54 estudiantes de Educación Secundaria, la investigación revela que la música instrumental activa campos semánticos compartidos entre oyentes distintos, confirmando su capacidad para generar significado.</p>
-        <p class="tfg-soon">Próximamente se añadirá aquí un enlace al TFG completo, una vez se publique en el repositorio de la UAL.</p>
+        <p data-i18n="tfg.summary">Este estudio indaga en la interrelación entre la música instrumental, la activación léxica y la construcción semántica, explorando cómo la experiencia musical puede evocar asociaciones léxicas y facilitar procesos de significación incluso en ausencia de palabras. A través de un estudio de campo con 54 estudiantes de Educación Secundaria, la investigación revela que la música instrumental activa campos semánticos compartidos entre oyentes distintos, confirmando su capacidad para generar significado.</p>
+        <p class="tfg-soon" data-i18n="tfg.soon">Próximamente se añadirá aquí un enlace al TFG completo, una vez se publique en el repositorio de la UAL.</p>
         <div class="kw-list" id="kw-list"></div>
       </div>
       <dl class="tfg-facts" id="tfg-facts"></dl>
@@ -1168,8 +1203,8 @@ footer{
 <section id="bibliografia" class="section">
   <div class="container">
     <div class="section-head">
-      <h2 class="section-title grad-title" data-split-words>Bibliografía</h2>
-      <p class="section-lede" data-split-words>Referencias citadas en De sono ad verbum:</p>
+      <h2 class="section-title grad-title" data-split-words data-i18n="bibliografia.title">Bibliografía</h2>
+      <p class="section-lede" data-split-words data-i18n="bibliografia.lede">Referencias citadas en De sono ad verbum:</p>
     </div>
     <ul class="biblio-list" id="biblio-list"></ul>
   </div>
@@ -1184,8 +1219,8 @@ footer{
 <section id="contacto" class="section">
   <div class="container">
     <div class="section-head">
-      <h2 class="section-title grad-title" data-split-words>Contacto</h2>
-      <p class="section-lede" data-split-words>De sono ad verbum es un trabajo abierto: cada palabra que se suma al atlas alimenta la investigación en curso. Si quieres compartir algo, escribe.</p>
+      <h2 class="section-title grad-title" data-split-words data-i18n="contacto.title">Contacto</h2>
+      <p class="section-lede" data-split-words data-i18n="contacto.lede">De sono ad verbum es un trabajo abierto: cada palabra que se suma al atlas alimenta la investigación en curso. Si quieres compartir algo, escribe.</p>
     </div>
     <div class="contact-grid" id="contact-grid"></div>
   </div>
@@ -1493,8 +1528,8 @@ const TFG_FACTS = [
   {k:"Directora", v:"María Victoria Mateo García"},
   {k:"Codirector", v:"Juan Antonio Rubio Guirado"},
   {k:"Universidad", v:"Universidad de Almería"},
-  {k:"Curso académico", v:"2025 / 2026 — convocatoria de mayo"},
-  {k:"Calificación", v:"Matrícula de Honor", cls:"honor"},
+  {k:"Curso académico", v:"2025 / 2026 — convocatoria de mayo", vKey:"tfgfacts.v.4"},
+  {k:"Calificación", v:"Matrícula de Honor", cls:"honor", vKey:"tfgfacts.v.5"},
 ];
 const KEYWORDS = ["disponibilidad léxica","activación léxica","semiótica musical","música instrumental","semántica","significado","lenguaje"];
 
@@ -1568,6 +1603,678 @@ const clamp = (v,a,b)=>Math.max(a,Math.min(b,v));
 const lerp = (a,b,t)=>a+(b-a)*t;
 const map = (v,a,b,c,d)=>c+(clamp(v,Math.min(a,b),Math.max(a,b))-a)*(d-c)/(b-a);
 const prefersReduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+/* ============================================================
+   IDIOMA — ES / EN / FR
+   La web nace en español; este diccionario traduce los textos fijos
+   (no los datos del estudio: las palabras del atlas léxico y la
+   bibliografía se quedan tal cual se recogieron/publicaron, en su
+   idioma original, sea cual sea el idioma elegido para navegar).
+   ============================================================ */
+const I18N = {
+  es: {
+    "nav.badge":"● Proyecto interdisciplinar",
+    "nav.intro":"Introducción", "nav.cronologia":"Cronología", "nav.ep":"EP",
+    "nav.investigacion":"Investigación", "nav.atlas":"Atlas", "nav.participar":"Participar",
+    "nav.tfg":"TFG", "nav.contacto":"Contacto",
+
+    "hero.sub":"La activación léxica a través de la música instrumental",
+    "hero.tagline1":"¿Puede una melodía convertirse en palabras?",
+    "hero.tagline2":"Un proyecto sobre música, lenguaje y significado.",
+    "hero.btnParticipar":"Participar",
+    "hero.btnEscuchar":"▶ Escuchar el EP →",
+    "hero.btnInvestigacion":"Investigación",
+    "hero.explorar":"Explorar",
+
+    "proyecto.lede":"Con motivo de un Trabajo Fin de Grado en Filología Hispánica que estudia si la música instrumental puede generar significado y traducirse en palabras, se ha creado esta página para extender el corpus lingüístico de la investigación iniciada en el IES Bahía de Almería.",
+    "proyecto.quote":"«Con nosotros la música está por naturaleza conjuntada de tal manera que, ni siquiera aunque queramos, podemos estar privados de ella»",
+    "proyecto.quoteCite":"(Boecio, 2009, p. 11)",
+
+    "cronologia.title":"Cronología",
+
+    "obras.title":"EP",
+    "obras.lede":"Abyssus, Vortex, Transmutatio y Ad lucem son las cuatro piezas orquestales del proyecto compositivo RA, publicadas como EP el 9 de mayo. Cada una explora una dimensión distinta del mismo viaje — de la fractura a la luz —; Abyssus y Ad lucem, sus dos polos, fueron el estímulo del estudio de campo.",
+    "obras.stream":"Escúchalo en",
+    "obras.raNote":"El nombre del proyecto, <i class=\"lat-term\">RA</i>, no es casual. La <span class=\"ra-letter\">R</span> es la inicial de Rocío, autora del TFG y del EP; la <span class=\"ra-letter\">A</span> es, a la vez, la inicial y la letra final de los nombres de las personas a quienes están dedicados ambos. Juntas, <span class=\"ra-letter\">R</span> y <span class=\"ra-letter\">A</span> forman <i class=\"lat-term\">RA</i>. Dicho encuentro no es solo un juego de iniciales: Ra es también la deidad solar de la mitología egipcia, de la creación y de la luz, considerado el rey supremo del cosmos y el creador de toda la vida. De ahí nace el sol que preside la portada del EP y esta misma página, con las letras RA en su centro. Así pues, el nombre entrelaza lo personal y lo simbólico: la luz que da nombre y que ilumina, poco a poco, el tránsito desde una especie de oscuridad a la claridad que atraviesa todo el trabajo.",
+    "works.badge.studied":"Estudio de campo",
+    "works.badge.open":"Atlas abierto",
+    "works.playAria":"Reproducir",
+
+    "metodologia.title":"Investigación",
+    "metodologia.lede":"Una investigación interdisciplinar que cruza filología, semiótica musical, cognición y disponibilidad léxica, y que lleva la teoría a la palabra escrita a través de un estudio de campo realizado en el IES Bahía de Almería con 54 estudiantes de Educación Secundaria.",
+
+    "resultados.title":"Atlas léxico",
+    "resultados.lede":"96 vocablos y 311 palabras surgieron tras escuchar Abyssus en el estudio original; 113 vocablos y 323 palabras, tras Ad lucem. Esta sección representa la dimensión viva del proyecto: la investigación comenzó aquí, pero la intención es que el atlas siga creciendo con cada persona que participe, para las cuatro composiciones.",
+    "resultados.cloudHint":"Pasa el ratón para ampliar una palabra · pulsa para ver su ficha",
+    "resultados.mapTitle":"Procedencia de las participaciones",
+    "resultados.mapSub":"El territorio de cada país se enciende en amarillo y naranja con las personas que han participado desde allí. Arrastra el globo para girarlo y pasa el ratón por encima de una región iluminada para ver cuántas participaciones hay.",
+    "resultados.exportBtn":"↓ Exportar datos del atlas (LexPRO)",
+    "cloud.filterAll":"Todas",
+    "cloud.cardIdl":"IDL",
+    "cloud.cardComposicion":"Composición",
+    "cloud.cardCategoria":"Categoría",
+    "cat.fieldStudy":"Estudio de campo",
+    "cat.community":"Aportación de la comunidad",
+    "stats.wordsAtlas":"Palabras en el atlas",
+    "stats.wordsCommunity":"Palabras de la comunidad",
+    "stats.submissions":"Participaciones registradas",
+    "stats.lastContribution":"Última aportación",
+    "map.participationOne":"participación",
+    "map.participationMany":"participaciones",
+
+    "participa.title":"Participar",
+    "participa.lede":"Vas a escuchar las cuatro composiciones, una tras otra, y escribir con libertad las palabras, emociones o imágenes que te sugieran: en dos de ellas mientras suena la música, y en las otras dos justo después. Tus respuestas se suman, en directo, al atlas léxico de la investigación.",
+
+    "wizard.stepAbout":"Sobre ti",
+    "wizard.stepConfirm":"Confirmación",
+    "wizard.introLede":"Ahora vas a escuchar las <span class=\"voc\">cuatro composiciones</span>, una tras otra. En <span class=\"voc\">dos de ellas</span> escribirás las palabras que te vengan a la mente <span class=\"voc\">mientras suena la música</span>; en <span class=\"voc\">las otras dos</span>, escucharás la pieza completa y después <span class=\"voc\">tendrás dos minutos para escribir</span>. Te iremos indicando en cada momento qué toca hacer.",
+    "wizard.introStart":"Comenzar",
+    "wizard.sending":"Enviando…",
+    "wizard.loading":"Cargando…",
+    "wizard.listenAria":"Escuchar",
+
+    "wizard.after.lede":"Escucha la pieza completa. Cuando termine, <span class=\"voc\">tendrás 2 minutos para escribir</span> las palabras que te hayan venido a la mente.",
+    "wizard.after.idleTime":"Escucha la pieza completa para empezar",
+    "wizard.after.placeholder":"Escucha la pieza entera. En cuanto termine su reproducción, tendrá 2 minutos para escribir aquí las primeras palabras, imágenes y asociaciones que le hayan venido a la mente al escuchar dicha pieza. Separa cada palabra con una coma o pulsando Intro (salto de línea).",
+    "wizard.after.submitBtn":"Enviar respuesta",
+    "wizard.after.playingPrefix":"Reproduciendo — ",
+    "wizard.after.playingSuffix":" en total",
+    "wizard.after.writingOpen":"Ya puedes escribir",
+    "wizard.after.timerPrefix":"⏱ ",
+    "wizard.after.timerSuffix":" para escribir",
+    "wizard.after.errEmpty":"Escribe al menos una palabra.",
+
+    "wizard.during.lede":"Pulsa para escuchar. <span class=\"voc\">Mientras suena la música</span>, escribe cada palabra que te venga a la mente y <span class=\"voc\">pulsa Intro para añadirla</span>.",
+    "wizard.during.idleTime":"Escucha la pieza completa para empezar",
+    "wizard.during.placeholder":"Escribe una palabra y pulsa Intro…",
+    "wizard.during.playingPrefix":"Reproduciendo — ",
+    "wizard.during.playingMid":" en total. Escribe cada palabra y ",
+    "wizard.during.playingEnter":"pulsa Intro",
+    "wizard.during.pendingFinish":"Termina de escribir esa palabra y pulsa Intro para continuar…",
+
+    "profile.intro":"La participación es totalmente anónima, por lo que no te pedimos tu nombre ni apellidos. Antes de empezar, necesitamos que completes unos datos básicos para la investigación. Esta información no se mostrará en la página y se utilizará exclusivamente con fines de estudio.",
+    "profile.sex":"Sexo *", "profile.sexHombre":"Hombre", "profile.sexMujer":"Mujer", "profile.sexOtro":"Otro",
+    "profile.age":"Edad *", "profile.age65":"65 o más",
+    "profile.music":"¿Tienes estudios musicales? *", "profile.musicSi":"Sí", "profile.musicNo":"No",
+    "profile.country":"País donde vives *", "profile.countryPlaceholder":"Selecciona un país",
+    "profile.locationDefaultLabel":"Dónde vives *",
+    "profile.locationDefaultPlaceholder":"Primero selecciona un país arriba",
+    "profile.locationSpainLabel":"Comunidad autónoma y provincia *",
+    "profile.ccaaPlaceholder":"Selecciona una comunidad autónoma",
+    "profile.provinciaPlaceholder":"Selecciona una provincia",
+    "profile.provinciaPlaceholderNoCcaa":"Primero elige una comunidad autónoma",
+    "profile.locationOtherLabel":"Provincia, región o ciudad donde resides *",
+    "profile.locationOtherPlaceholder":"Escribe tu provincia, región o ciudad",
+    "profile.submitBtn":"Empezar",
+    "profile.errSex":"Selecciona tu sexo.",
+    "profile.errAge":"Selecciona tu edad.",
+    "profile.errMusic":"Indica si tienes estudios musicales.",
+    "profile.errCountry":"Selecciona un país.",
+    "profile.errCcaa":"Selecciona una comunidad autónoma.",
+    "profile.errProvincia":"Selecciona una provincia.",
+    "profile.errLocation":"Escribe tu provincia, región o ciudad.",
+
+    "confirm.thanks":"Muchas gracias por su participación.",
+    "confirm.wordsAdded":" palabra(s) añadidas al atlas léxico, repartidas entre las cuatro composiciones.",
+    "confirm.previewNote":" (Vista de previsualización: aquí no se comparte con otros visitantes.)",
+    "confirm.noWords":"No se recogieron palabras — no pasa nada, gracias igualmente por tu tiempo.",
+
+    "trabajo.title":"Trabajo Fin de Grado",
+    "tfg.summary":"Este estudio indaga en la interrelación entre la música instrumental, la activación léxica y la construcción semántica, explorando cómo la experiencia musical puede evocar asociaciones léxicas y facilitar procesos de significación incluso en ausencia de palabras. A través de un estudio de campo con 54 estudiantes de Educación Secundaria, la investigación revela que la música instrumental activa campos semánticos compartidos entre oyentes distintos, confirmando su capacidad para generar significado.",
+    "tfg.soon":"Próximamente se añadirá aquí un enlace al TFG completo, una vez se publique en el repositorio de la UAL.",
+    "tfgfacts.k.0":"Autora", "tfgfacts.k.1":"Directora", "tfgfacts.k.2":"Codirector",
+    "tfgfacts.k.3":"Universidad", "tfgfacts.k.4":"Curso académico", "tfgfacts.k.5":"Calificación",
+    "tfgfacts.v.4":"2025 / 2026 — convocatoria de mayo", "tfgfacts.v.5":"Matrícula de Honor",
+
+    "bibliografia.title":"Bibliografía",
+    "bibliografia.lede":"Referencias citadas en De sono ad verbum:",
+
+    "contacto.title":"Contacto",
+    "contacto.lede":"De sono ad verbum es un trabajo abierto: cada palabra que se suma al atlas alimenta la investigación en curso. Si quieres compartir algo, escribe.",
+    "contacto.correo":"Correo",
+
+    "about.0.t":"Origen", "about.0.d":"Este Trabajo Fin de Grado cruza la filología y la música: nace de la intuición de que una melodía, sin una sola palabra, puede activar el mismo tipo de significado que el lenguaje verbal.",
+    "about.1.t":"El estímulo musical", "about.1.d":"A diferencia de los estudios clásicos de disponibilidad léxica, que parten de núcleos temáticos verbales, esta investigación usa la música instrumental como estímulo y deja que sea el oyente quien la traduzca en palabras.",
+    "about.2.t":"Música y significado", "about.2.d":"Según Umberto Eco e Iuri Lotman, la música puede entenderse como un lenguaje secundario: un sistema de signos capaz de comunicar valores de sentido sin necesidad de traducirse a palabras.",
+    "about.3.t":"Semiótica", "about.3.d":"Disciplina que estudia los procesos culturales como procesos de comunicación. Aplicada a la música, analiza cómo los sonidos —igual que los signos lingüísticos— pueden generar significado.",
+    "about.4.t":"Lexicón mental", "about.4.d":"El «diccionario mental» donde se almacenan las palabras junto a su significado, sus usos y sus relaciones con otras. Un «macrofichero de datos» (Miranda García, 1993).",
+    "about.5.t":"Disponibilidad léxica", "about.5.d":"El conjunto de palabras que una persona activa ante un estímulo concreto, más allá de las que usa con mayor frecuencia. Término acuñado por Michéa a mediados del siglo XX.",
+
+    "research.0.t":"Resumen", "research.0.d":"En lugar de partir de núcleos temáticos verbales, como es habitual en los estudios de disponibilidad léxica, este trabajo utiliza la música como estímulo. Su estructura, dividida en movimientos, reproduce formalmente el propio recorrido conceptual del proyecto musical que estudia.",
+    "research.1.t":"Objetivos", "research.1.d":"Analizar la producción léxica generada por <i class=\"lat-term\">Abyssus</i> y <i class=\"lat-term\">Ad lucem</i> y observar qué campos semánticos emergen; determinar si estímulos musicales distintos generan asociaciones léxicas distintas; y explorar cómo el sexo, el curso académico o la formación musical influyen en esa producción.",
+    "research.2.t":"Hipótesis", "research.2.d":"Que la música puede favorecer procesos de activación léxica compartidos entre oyentes; que composiciones con características expresivas distintas generan campos semánticos distintos; y que los factores sociales introducen matices, aunque el estímulo musical siga siendo el más influyente.",
+    "research.3.t":"Resultados", "research.3.d":"En <i class=\"lat-term\">Abyssus</i>, los vocablos más disponibles fueron <span class=\"voc\">«acción»</span>, <span class=\"voc\">«película»</span>, <span class=\"voc\">«tensión»</span> y <span class=\"voc\">«guerra»</span>, componiendo así un campo asociado al movimiento y el conflicto. Mientras tanto, en <i class=\"lat-term\">Ad lucem</i>, predominaron <span class=\"voc\">«tranquilidad»</span>, <span class=\"voc\">«tristeza»</span>, <span class=\"voc\">«relajación»</span> y <span class=\"voc\">«paz»</span>, siendo, pues, un universo ligado a la introspección y la emoción.",
+    "research.4.t":"Discusión", "research.4.d":"Aunque ninguna de las dos composiciones contiene contenido verbal explícito, los participantes tradujeron la experiencia sonora en unidades léxicas organizadas en torno a campos semánticos reconocibles, respaldando la música instrumental como desencadenante de la producción léxica.",
+    "research.5.t":"Conclusiones", "research.5.d":"El estímulo musical resulta el principal factor organizador de la producción léxica observada: entre el sonido y la palabra existe un espacio simbólico donde emociones, imágenes y recuerdos se convierten, poco a poco, en significado. Ese tránsito, del sonido a la palabra, ha sido el verdadero foco de este trabajo.",
+
+    "works.0.latin":'Del lat. tardío <i class="lat-term">abyssus</i>, «abismo»',
+    "works.0.desc":"La primera pieza del proyecto <i class=\"lat-term\">RA</i>. Nace desde la pérdida y la primera fractura con la realidad, donde aún no existe una estructura clara: solo un vacío que empieza a tomar forma lentamente.",
+    "works.0.instruments":"Violonchelo, violín, viola, bombardino, trompa, piano, percusión",
+    "works.0.context":"Los participantes asociaron su escucha con acción, tensión y conflicto: <span class=\"voc\">«acción»</span> y <span class=\"voc\">«película»</span> encabezan el índice de disponibilidad léxica, seguidas de <span class=\"voc\">«guerra»</span> y <span class=\"voc\">«pelea»</span>.",
+    "works.1.latin":'Del lat. <i class="lat-term">vortex, -ĭcis</i>, «torbellino», «remolino»',
+    "works.1.desc":"Un intento de trascender el estado introspectivo de <i class=\"lat-term\">Abyssus</i>, aún impregnado de desorientación: transmite la sensación de un avance constante, aunque sin un destino claro.",
+    "works.1.instruments":"Piano, percusión, contrabajo, tuba, timbales, violonchelo, viola",
+    "works.1.context":"No formó parte del estudio de campo original — su nube de palabras crece solo con lo que aporten quienes participen aquí.",
+    "works.2.latin":'Del lat. <i class="lat-term">transmutatio, -ōnis</i>, «transformación», «cambio»',
+    "works.2.desc":"Un punto de inflexión: frente a la tensión de las piezas anteriores, aparece una atmósfera introspectiva y contemplativa, orientada hacia el equilibrio y la reconstrucción personal.",
+    "works.2.instruments":"Percusión, violonchelo, viola, piano, trompa, timbales",
+    "works.2.context":"No formó parte del estudio de campo original — su nube de palabras crece solo con lo que aporten quienes participen aquí.",
+    "works.3.latin":'Del lat. <i class="lat-term">ad lucem</i>, «hacia la luz»',
+    "works.3.desc":"La última pieza del EP funciona como cierre simbólico del viaje: un ascenso hacia la reconciliación y la calma, tras la fragmentación y la tensión iniciales de <i class=\"lat-term\">Abyssus</i>.",
+    "works.3.instruments":"Piano, tuba, timbales, contrabajo, violonchelo, viola, trompa",
+    "works.3.context":"La escucha activó <span class=\"voc\">«tranquilidad»</span>, <span class=\"voc\">«tristeza»</span> y <span class=\"voc\">«relajación»</span>: un vocabulario ligado a la memoria, la serenidad y la emoción, muy distinto al de <i class=\"lat-term\">Abyssus</i>.",
+
+    "method.0.t":"Semiótica", "method.0.d":"La música se entiende como un sistema de signos —siguiendo a Saussure, Peirce, Eco y Lotman— capaz de comunicar significados sin necesidad de traducirse a palabras.",
+    "method.1.t":"Escucha musical", "method.1.d":"54 estudiantes de 1.º y 3.º de ESO del IES Bahía de Almería escuchan, en el aula, las composiciones <i class=\"lat-term\">Abyssus</i> y <i class=\"lat-term\">Ad lucem</i> del proyecto <i class=\"lat-term\">RA</i>.",
+    "method.2.t":"Disponibilidad léxica", "method.2.d":"Se aplican los métodos propios del léxico disponible para observar qué palabras emergen con mayor fuerza tras cada audición.",
+    "method.3.t":"Recogida de palabras", "method.3.d":"Tras cada pieza, los participantes disponen de dos minutos para anotar libremente las palabras, emociones e imágenes que la música les sugiere.",
+    "method.4.t":"Análisis", "method.4.d":"Las respuestas se organizan mediante el Índice de Disponibilidad Léxica (IDL), revelando los campos semánticos activados por cada obra.",
+
+    "timeline.0.t":"Nacimiento de la idea", "timeline.0.d":"«¿Puede la música instrumental generar significado y traducirse en palabras?». De esta pregunta parte el trabajo, un proyecto que cruza filología, semiótica y composición.",
+    "timeline.1.t":"Diseño metodológico", "timeline.1.d":"Se define un estudio cualitativo y descriptivo, y se eligen <i class=\"lat-term\">Abyssus</i> y <i class=\"lat-term\">Ad lucem</i> como estímulos musicales por su contraste sonoro: la primera, densa y tensa; la segunda, luminosa y serena. También se preparan los materiales del estudio, la escucha guiada y los dos minutos para escribir después, y se fija cómo se aplicará todo en el aula.",
+    "timeline.2.t":"Composición musical", "timeline.2.d":"Creación del proyecto orquestal <i class=\"lat-term\">RA</i> —<i class=\"lat-term\">Abyssus</i>, <i class=\"lat-term\">Vortex</i>, <i class=\"lat-term\">Transmutatio</i> y <i class=\"lat-term\">Ad lucem</i>— con MuseScore, publicado como EP el 9 de mayo en plataformas digitales.",
+    "timeline.3.t":"Estudio de campo", "timeline.3.d":"Estudio con 54 estudiantes (25 alumnos, 29 alumnas) de 1.º y 3.º de ESO en el IES Bahía de Almería, curso 2025/2026.",
+    "timeline.4.t":"Análisis", "timeline.4.d":"Aplicación de los métodos de disponibilidad léxica e interpretación de los índices IDL obtenidos para cada composición.",
+    "timeline.5.t":"Defensa", "timeline.5.d":"El trabajo se expuso el 23 de junio en la Facultad de Humanidades de la Universidad de Almería, ante un tribunal formado por Elisabeth Fernández Martín (presidenta), Eman Mhanna (secretaria) y Yolanda del Pilar Cruz López (vocal), y obtuvo la calificación de Matrícula de Honor.",
+
+    "keywords.0":"disponibilidad léxica", "keywords.1":"activación léxica", "keywords.2":"semiótica musical",
+    "keywords.3":"música instrumental", "keywords.4":"semántica", "keywords.5":"significado", "keywords.6":"lenguaje",
+
+    "quotes.0":"La música también comunica cuando no utiliza palabras.",
+    "quotes.1":"Escuchar también es interpretar.",
+    "quotes.2":"El sonido puede activar significado.",
+    "quotes.3":"Si el lenguaje nombra el mundo, la música habita en los espacios aún sin nombre.",
+    "quotes.4":"Lo que no podemos expresar con palabras halla en la música un refugio donde puede ser entendido."
+  },
+
+  en: {
+    "nav.badge":"● Interdisciplinary project",
+    "nav.intro":"Introduction", "nav.cronologia":"Timeline", "nav.ep":"EP",
+    "nav.investigacion":"Research", "nav.atlas":"Atlas", "nav.participar":"Participate",
+    "nav.tfg":"Thesis", "nav.contacto":"Contact",
+
+    "hero.sub":"Lexical activation through instrumental music",
+    "hero.tagline1":"Can a melody turn into words?",
+    "hero.tagline2":"A project about music, language and meaning.",
+    "hero.btnParticipar":"Participate",
+    "hero.btnEscuchar":"▶ Listen to the EP →",
+    "hero.btnInvestigacion":"Research",
+    "hero.explorar":"Explore",
+
+    "proyecto.lede":"Created for a Bachelor's thesis in Hispanic Philology that studies whether instrumental music can generate meaning and be translated into words, this page extends the linguistic corpus of the research that began at IES Bahía de Almería.",
+    "proyecto.quote":"“Music is so naturally united with us that we cannot be free from it even if we so desired.”",
+    "proyecto.quoteCite":"(Boethius, 2009, p. 11)",
+
+    "cronologia.title":"Timeline",
+
+    "obras.title":"EP",
+    "obras.lede":"Abyssus, Vortex, Transmutatio and Ad lucem are the four orchestral pieces of the RA compositional project, released as an EP on 9 May. Each explores a different dimension of the same journey — from fracture to light —; Abyssus and Ad lucem, its two poles, were the stimulus used in the field study.",
+    "obras.stream":"Listen on",
+    "obras.raNote":"The project's name, <i class=\"lat-term\">RA</i>, is no accident. The <span class=\"ra-letter\">R</span> is the initial of Rocío, author of the thesis and the EP; the <span class=\"ra-letter\">A</span> is, at once, the initial and the final letter of the names of the people to whom both are dedicated. Together, <span class=\"ra-letter\">R</span> and <span class=\"ra-letter\">A</span> form <i class=\"lat-term\">RA</i>. That meeting is not just a play on initials: Ra is also the sun deity of Egyptian mythology, god of creation and light, held to be the supreme king of the cosmos and creator of all life. From there comes the sun that presides over the EP cover and this very page, with the letters RA at its centre. The name thus weaves together the personal and the symbolic: the light that names and that gradually illuminates the passage from a kind of darkness into the clarity that runs through the whole project.",
+    "works.badge.studied":"Field study",
+    "works.badge.open":"Open atlas",
+    "works.playAria":"Play",
+
+    "metodologia.title":"Research",
+    "metodologia.lede":"An interdisciplinary investigation crossing philology, musical semiotics, cognition and lexical availability, carrying the theory into the written word through a field study conducted at IES Bahía de Almería with 54 secondary-school students.",
+
+    "resultados.title":"Lexical atlas",
+    "resultados.lede":"96 word types and 311 word tokens emerged after listening to Abyssus in the original study; 113 types and 323 tokens after Ad lucem. This section is the living dimension of the project: the research started here, but the intention is for the atlas to keep growing with every person who takes part, for all four compositions.",
+    "resultados.cloudHint":"Hover to enlarge a word · click to see its details",
+    "resultados.mapTitle":"Where participants come from",
+    "resultados.mapSub":"Each country's territory lights up in yellow and orange with the people who have taken part from there. Drag the globe to rotate it and hover over a lit-up region to see how many participants it has.",
+    "resultados.exportBtn":"↓ Export atlas data (LexPRO)",
+    "cloud.filterAll":"All",
+    "cloud.cardIdl":"LAI",
+    "cloud.cardComposicion":"Piece",
+    "cloud.cardCategoria":"Category",
+    "cat.fieldStudy":"Field study",
+    "cat.community":"Community contribution",
+    "stats.wordsAtlas":"Words in the atlas",
+    "stats.wordsCommunity":"Words from the community",
+    "stats.submissions":"Participations recorded",
+    "stats.lastContribution":"Latest contribution",
+    "map.participationOne":"participant",
+    "map.participationMany":"participants",
+
+    "participa.title":"Participate",
+    "participa.lede":"You're about to listen to the four compositions, one after another, and freely write down the words, feelings or images they suggest to you: while the music plays for two of them, and right after it for the other two. Your answers are added, live, to the research's lexical atlas.",
+
+    "wizard.stepAbout":"About you",
+    "wizard.stepConfirm":"Confirmation",
+    "wizard.introLede":"You're now going to listen to the <span class=\"voc\">four compositions</span>, one after another. For <span class=\"voc\">two of them</span> you'll write the words that come to mind <span class=\"voc\">while the music plays</span>; for <span class=\"voc\">the other two</span>, you'll listen to the whole piece and then <span class=\"voc\">have two minutes to write</span>. We'll let you know what to do at each step.",
+    "wizard.introStart":"Start",
+    "wizard.sending":"Sending…",
+    "wizard.loading":"Loading…",
+    "wizard.listenAria":"Listen to",
+
+    "wizard.after.lede":"Listen to the whole piece. When it ends, <span class=\"voc\">you'll have 2 minutes to write</span> the words that came to mind.",
+    "wizard.after.idleTime":"Listen to the whole piece to begin",
+    "wizard.after.placeholder":"Listen to the whole piece. As soon as it finishes, you'll have 2 minutes to write here the first words, images and associations the piece brought to mind. Separate each word with a comma or by pressing Enter (new line).",
+    "wizard.after.submitBtn":"Submit answer",
+    "wizard.after.playingPrefix":"Now playing — ",
+    "wizard.after.playingSuffix":" total",
+    "wizard.after.writingOpen":"You can write now",
+    "wizard.after.timerPrefix":"⏱ ",
+    "wizard.after.timerSuffix":" to write",
+    "wizard.after.errEmpty":"Write at least one word.",
+
+    "wizard.during.lede":"Press play to listen. <span class=\"voc\">While the music plays</span>, write every word that comes to mind and <span class=\"voc\">press Enter to add it</span>.",
+    "wizard.during.idleTime":"Listen to the whole piece to begin",
+    "wizard.during.placeholder":"Write a word and press Enter…",
+    "wizard.during.playingPrefix":"Now playing — ",
+    "wizard.during.playingMid":" total. Write each word and ",
+    "wizard.during.playingEnter":"press Enter",
+    "wizard.during.pendingFinish":"Finish writing that word and press Enter to continue…",
+
+    "profile.intro":"Taking part is completely anonymous, so we don't ask for your name or surname. Before you start, we need you to fill in a few basic details for the research. This information won't be shown on the page and will be used solely for the study.",
+    "profile.sex":"Sex *", "profile.sexHombre":"Male", "profile.sexMujer":"Female", "profile.sexOtro":"Other",
+    "profile.age":"Age *", "profile.age65":"65 or older",
+    "profile.music":"Do you have any musical training? *", "profile.musicSi":"Yes", "profile.musicNo":"No",
+    "profile.country":"Country you live in *", "profile.countryPlaceholder":"Select a country",
+    "profile.locationDefaultLabel":"Where you live *",
+    "profile.locationDefaultPlaceholder":"First select a country above",
+    "profile.locationSpainLabel":"Autonomous community and province *",
+    "profile.ccaaPlaceholder":"Select an autonomous community",
+    "profile.provinciaPlaceholder":"Select a province",
+    "profile.provinciaPlaceholderNoCcaa":"First choose an autonomous community",
+    "profile.locationOtherLabel":"Province, region or city where you live *",
+    "profile.locationOtherPlaceholder":"Write your province, region or city",
+    "profile.submitBtn":"Start",
+    "profile.errSex":"Select your sex.",
+    "profile.errAge":"Select your age.",
+    "profile.errMusic":"Tell us whether you have musical training.",
+    "profile.errCountry":"Select a country.",
+    "profile.errCcaa":"Select an autonomous community.",
+    "profile.errProvincia":"Select a province.",
+    "profile.errLocation":"Write your province, region or city.",
+
+    "confirm.thanks":"Thank you so much for taking part.",
+    "confirm.wordsAdded":" word(s) added to the lexical atlas, spread across the four compositions.",
+    "confirm.previewNote":" (Preview view: this isn't shared with other visitors.)",
+    "confirm.noWords":"No words were collected — that's fine, thank you all the same for your time.",
+
+    "trabajo.title":"Bachelor's Thesis",
+    "tfg.summary":"This study explores the interplay between instrumental music, lexical activation and semantic construction, looking at how the musical experience can evoke lexical associations and facilitate processes of meaning-making even in the absence of words. Through a field study with 54 secondary-school students, the research shows that instrumental music activates semantic fields shared among different listeners, confirming its capacity to generate meaning.",
+    "tfg.soon":"A link to the full thesis will be added here once it is published in the UAL repository.",
+    "tfgfacts.k.0":"Author", "tfgfacts.k.1":"Supervisor", "tfgfacts.k.2":"Co-supervisor",
+    "tfgfacts.k.3":"University", "tfgfacts.k.4":"Academic year", "tfgfacts.k.5":"Grade",
+    "tfgfacts.v.4":"2025 / 2026 — May session", "tfgfacts.v.5":"Highest Honours",
+
+    "bibliografia.title":"Bibliography",
+    "bibliografia.lede":"References cited in De sono ad verbum:",
+
+    "contacto.title":"Contact",
+    "contacto.lede":"De sono ad verbum is an open-ended project: every word added to the atlas feeds the ongoing research. If you'd like to get in touch, write to us.",
+    "contacto.correo":"Email",
+
+    "about.0.t":"Origin", "about.0.d":"This thesis brings together philology and music: it is born from the intuition that a melody, without a single word, can activate the same kind of meaning as verbal language.",
+    "about.1.t":"The musical stimulus", "about.1.d":"Unlike classic lexical-availability studies, which start from verbal thematic centres of interest, this research uses instrumental music as the stimulus and lets the listener translate it into words.",
+    "about.2.t":"Music and meaning", "about.2.d":"According to Umberto Eco and Yuri Lotman, music can be understood as a secondary language: a system of signs capable of communicating values of sense without needing to be translated into words.",
+    "about.3.t":"Semiotics", "about.3.d":"The discipline that studies cultural processes as communication processes. Applied to music, it analyses how sounds — like linguistic signs — can generate meaning.",
+    "about.4.t":"Mental lexicon", "about.4.d":"The “mental dictionary” where words are stored together with their meaning, their uses and their relations with other words. A “macro data file” (Miranda García, 1993).",
+    "about.5.t":"Lexical availability", "about.5.d":"The set of words a person activates in response to a given stimulus, beyond those they use most often. A term coined by Michéa in the mid-20th century.",
+
+    "research.0.t":"Summary", "research.0.d":"Instead of starting from verbal thematic centres of interest, as is usual in lexical-availability studies, this work uses music as the stimulus. Its structure, divided into movements, formally mirrors the very conceptual journey of the musical project it studies.",
+    "research.1.t":"Objectives", "research.1.d":"To analyse the lexical production generated by <i class=\"lat-term\">Abyssus</i> and <i class=\"lat-term\">Ad lucem</i> and observe which semantic fields emerge; to determine whether different musical stimuli generate different lexical associations; and to explore how sex, school year or musical training influence that production.",
+    "research.2.t":"Hypotheses", "research.2.d":"That music can favour lexical activation processes shared among listeners; that compositions with different expressive traits generate different semantic fields; and that social factors introduce nuances, even though the musical stimulus remains the most influential factor.",
+    "research.3.t":"Results", "research.3.d":"For <i class=\"lat-term\">Abyssus</i>, the most available words were <span class=\"voc\">“action”</span>, <span class=\"voc\">“film”</span>, <span class=\"voc\">“tension”</span> and <span class=\"voc\">“war”</span>, making up a field linked to movement and conflict. Meanwhile, for <i class=\"lat-term\">Ad lucem</i>, <span class=\"voc\">“calm”</span>, <span class=\"voc\">“sadness”</span>, <span class=\"voc\">“relaxation”</span> and <span class=\"voc\">“peace”</span> predominated — a universe tied to introspection and emotion.",
+    "research.4.t":"Discussion", "research.4.d":"Although neither composition contains explicit verbal content, participants translated the sound experience into lexical units organised around recognisable semantic fields, supporting instrumental music as a trigger for lexical production.",
+    "research.5.t":"Conclusions", "research.5.d":"The musical stimulus proves to be the main organising factor of the lexical production observed: between sound and word lies a symbolic space where emotions, images and memories gradually turn into meaning. That transition, from sound to word, has been the true focus of this work.",
+
+    "works.0.latin":'From Late Latin <i class="lat-term">abyssus</i>, “abyss”',
+    "works.0.desc":"The first piece of the <i class=\"lat-term\">RA</i> project. It is born out of loss and the first fracture with reality, where no clear structure yet exists: only a void that slowly begins to take shape.",
+    "works.0.instruments":"Cello, violin, viola, euphonium, French horn, piano, percussion",
+    "works.0.context":"Participants associated their listening with action, tension and conflict: <span class=\"voc\">“action”</span> and <span class=\"voc\">“film”</span> top the lexical-availability index, followed by <span class=\"voc\">“war”</span> and <span class=\"voc\">“fight”</span>.",
+    "works.1.latin":'From Latin <i class="lat-term">vortex, -ĭcis</i>, “whirlwind”, “whirlpool”',
+    "works.1.desc":"An attempt to transcend the introspective state of <i class=\"lat-term\">Abyssus</i>, still steeped in disorientation: it conveys the sense of constant forward motion, though without a clear destination.",
+    "works.1.instruments":"Piano, percussion, double bass, tuba, timpani, cello, viola",
+    "works.1.context":"It wasn't part of the original field study — its word cloud only grows with what participants contribute here.",
+    "works.2.latin":'From Latin <i class="lat-term">transmutatio, -ōnis</i>, “transformation”, “change”',
+    "works.2.desc":"A turning point: against the tension of the earlier pieces, an introspective, contemplative atmosphere appears, oriented toward balance and personal reconstruction.",
+    "works.2.instruments":"Percussion, cello, viola, piano, French horn, timpani",
+    "works.2.context":"It wasn't part of the original field study — its word cloud only grows with what participants contribute here.",
+    "works.3.latin":'From Latin <i class="lat-term">ad lucem</i>, “toward the light”',
+    "works.3.desc":"The EP's final piece works as a symbolic close to the journey: an ascent toward reconciliation and calm, after the fragmentation and tension that opened with <i class=\"lat-term\">Abyssus</i>.",
+    "works.3.instruments":"Piano, tuba, timpani, double bass, cello, viola, French horn",
+    "works.3.context":"Listening activated <span class=\"voc\">“calm”</span>, <span class=\"voc\">“sadness”</span> and <span class=\"voc\">“relaxation”</span>: a vocabulary tied to memory, serenity and emotion, very different from <i class=\"lat-term\">Abyssus</i>'s.",
+
+    "method.0.t":"Semiotics", "method.0.d":"Music is understood as a system of signs — following Saussure, Peirce, Eco and Lotman — capable of communicating meanings without needing to be translated into words.",
+    "method.1.t":"Musical listening", "method.1.d":"54 students in Years 1 and 3 of secondary school (ESO) at IES Bahía de Almería listen, in the classroom, to the <i class=\"lat-term\">Abyssus</i> and <i class=\"lat-term\">Ad lucem</i> compositions from the <i class=\"lat-term\">RA</i> project.",
+    "method.2.t":"Lexical availability", "method.2.d":"The standard lexical-availability methods are applied to observe which words emerge most strongly after each listening.",
+    "method.3.t":"Collecting words", "method.3.d":"After each piece, participants have two minutes to freely jot down the words, feelings and images the music suggests to them.",
+    "method.4.t":"Analysis", "method.4.d":"Responses are organised using the Lexical Availability Index (LAI), revealing the semantic fields activated by each piece.",
+
+    "timeline.0.t":"The idea is born", "timeline.0.d":"“Can instrumental music generate meaning and be translated into words?” This is the question the project starts from, one that crosses philology, semiotics and composition.",
+    "timeline.1.t":"Methodological design", "timeline.1.d":"A qualitative, descriptive study is defined, and <i class=\"lat-term\">Abyssus</i> and <i class=\"lat-term\">Ad lucem</i> are chosen as musical stimuli for their sonic contrast: the first dense and tense, the second luminous and serene. The study materials are also prepared — the guided listening and the two minutes to write afterwards — and how it will all be run in the classroom is set.",
+    "timeline.2.t":"Musical composition", "timeline.2.d":"Creation of the <i class=\"lat-term\">RA</i> orchestral project —<i class=\"lat-term\">Abyssus</i>, <i class=\"lat-term\">Vortex</i>, <i class=\"lat-term\">Transmutatio</i> and <i class=\"lat-term\">Ad lucem</i>— with MuseScore, released as an EP on 9 May on digital platforms.",
+    "timeline.3.t":"Field study", "timeline.3.d":"Study with 54 students (25 boys, 29 girls) in Years 1 and 3 of secondary school at IES Bahía de Almería, 2025/2026 school year.",
+    "timeline.4.t":"Analysis", "timeline.4.d":"Application of lexical-availability methods and interpretation of the LAI indices obtained for each composition.",
+    "timeline.5.t":"Defence", "timeline.5.d":"The thesis was presented on 23 June at the Faculty of Humanities of the University of Almería, before a panel formed by Elisabeth Fernández Martín (chair), Eman Mhanna (secretary) and Yolanda del Pilar Cruz López (member), and received the grade of Honours.",
+
+    "keywords.0":"lexical availability", "keywords.1":"lexical activation", "keywords.2":"musical semiotics",
+    "keywords.3":"instrumental music", "keywords.4":"semantics", "keywords.5":"meaning", "keywords.6":"language",
+
+    "quotes.0":"Music also communicates when it uses no words.",
+    "quotes.1":"To listen is also to interpret.",
+    "quotes.2":"Sound can activate meaning.",
+    "quotes.3":"If language names the world, music dwells in the spaces that still have no name.",
+    "quotes.4":"What we cannot express in words finds, in music, a refuge where it can be understood."
+  },
+
+  fr: {
+    "nav.badge":"● Projet interdisciplinaire",
+    "nav.intro":"Introduction", "nav.cronologia":"Chronologie", "nav.ep":"EP",
+    "nav.investigacion":"Recherche", "nav.atlas":"Atlas", "nav.participar":"Participer",
+    "nav.tfg":"Mémoire", "nav.contacto":"Contact",
+
+    "hero.sub":"L'activation lexicale à travers la musique instrumentale",
+    "hero.tagline1":"Une mélodie peut-elle se transformer en mots ?",
+    "hero.tagline2":"Un projet sur la musique, le langage et le sens.",
+    "hero.btnParticipar":"Participer",
+    "hero.btnEscuchar":"▶ Écouter l'EP →",
+    "hero.btnInvestigacion":"Recherche",
+    "hero.explorar":"Explorer",
+
+    "proyecto.lede":"Réalisée dans le cadre d'un mémoire de licence de philologie hispanique qui étudie si la musique instrumentale peut produire du sens et se traduire en mots, cette page prolonge le corpus linguistique de la recherche entamée à l'IES Bahía de Almería.",
+    "proyecto.quote":"« La musique nous est si naturellement unie que nous ne saurions nous en passer, même si nous le voulions. »",
+    "proyecto.quoteCite":"(Boèce, 2009, p. 11)",
+
+    "cronologia.title":"Chronologie",
+
+    "obras.title":"EP",
+    "obras.lede":"Abyssus, Vortex, Transmutatio et Ad lucem sont les quatre pièces orchestrales du projet compositionnel RA, publiées en EP le 9 mai. Chacune explore une dimension différente du même parcours — de la fracture à la lumière — ; Abyssus et Ad lucem, ses deux pôles, ont servi de stimulus à l'étude de terrain.",
+    "obras.stream":"Écoutez-le sur",
+    "obras.raNote":"Le nom du projet, <i class=\"lat-term\">RA</i>, n'est pas un hasard. Le <span class=\"ra-letter\">R</span> est l'initiale de Rocío, autrice du mémoire et de l'EP ; le <span class=\"ra-letter\">A</span> est à la fois l'initiale et la dernière lettre des prénoms des personnes auxquelles l'un et l'autre sont dédiés. Ensemble, <span class=\"ra-letter\">R</span> et <span class=\"ra-letter\">A</span> forment <i class=\"lat-term\">RA</i>. Cette rencontre n'est pas qu'un simple jeu d'initiales : Ra est aussi la divinité solaire de la mythologie égyptienne, dieu de la création et de la lumière, considéré comme le roi suprême du cosmos et le créateur de toute vie. De là naît le soleil qui orne la pochette de l'EP et cette page même, avec les lettres RA en son centre. Le nom entrelace ainsi l'intime et le symbolique : la lumière qui nomme et qui éclaire, peu à peu, le passage d'une forme d'obscurité vers la clarté qui traverse tout le projet.",
+    "works.badge.studied":"Étude de terrain",
+    "works.badge.open":"Atlas ouvert",
+    "works.playAria":"Écouter",
+
+    "metodologia.title":"Recherche",
+    "metodologia.lede":"Une recherche interdisciplinaire qui croise philologie, sémiotique musicale, cognition et disponibilité lexicale, et qui fait passer la théorie à l'écrit grâce à une étude de terrain menée à l'IES Bahía de Almería auprès de 54 élèves du secondaire.",
+
+    "resultados.title":"Atlas lexical",
+    "resultados.lede":"96 vocables et 311 mots sont apparus après l'écoute d'Abyssus lors de l'étude originale ; 113 vocables et 323 mots après Ad lucem. Cette section est la dimension vivante du projet : la recherche a commencé ici, mais l'intention est que l'atlas continue de croître avec chaque personne qui participe, pour les quatre compositions.",
+    "resultados.cloudHint":"Survolez un mot pour l'agrandir · cliquez pour voir sa fiche",
+    "resultados.mapTitle":"Origine des participations",
+    "resultados.mapSub":"Le territoire de chaque pays s'illumine en jaune et orange avec les personnes qui y ont participé. Faites glisser le globe pour le tourner et survolez une région allumée pour voir combien de participations elle compte.",
+    "resultados.exportBtn":"↓ Exporter les données de l'atlas (LexPRO)",
+    "cloud.filterAll":"Toutes",
+    "cloud.cardIdl":"IDL",
+    "cloud.cardComposicion":"Composition",
+    "cloud.cardCategoria":"Catégorie",
+    "cat.fieldStudy":"Étude de terrain",
+    "cat.community":"Contribution de la communauté",
+    "stats.wordsAtlas":"Mots dans l'atlas",
+    "stats.wordsCommunity":"Mots de la communauté",
+    "stats.submissions":"Participations enregistrées",
+    "stats.lastContribution":"Dernière contribution",
+    "map.participationOne":"participation",
+    "map.participationMany":"participations",
+
+    "participa.title":"Participer",
+    "participa.lede":"Vous allez écouter les quatre compositions, l'une après l'autre, et écrire librement les mots, émotions ou images qu'elles vous suggèrent : pour deux d'entre elles pendant que la musique joue, et pour les deux autres juste après. Vos réponses viennent s'ajouter, en direct, à l'atlas lexical de la recherche.",
+
+    "wizard.stepAbout":"À propos de vous",
+    "wizard.stepConfirm":"Confirmation",
+    "wizard.introLede":"Vous allez maintenant écouter les <span class=\"voc\">quatre compositions</span>, l'une après l'autre. Pour <span class=\"voc\">deux d'entre elles</span>, vous écrirez les mots qui vous viennent à l'esprit <span class=\"voc\">pendant que la musique joue</span> ; pour <span class=\"voc\">les deux autres</span>, vous écouterez le morceau en entier puis <span class=\"voc\">vous aurez deux minutes pour écrire</span>. Nous vous indiquerons à chaque étape ce qu'il faut faire.",
+    "wizard.introStart":"Commencer",
+    "wizard.sending":"Envoi…",
+    "wizard.loading":"Chargement…",
+    "wizard.listenAria":"Écouter",
+
+    "wizard.after.lede":"Écoutez le morceau en entier. Une fois terminé, <span class=\"voc\">vous aurez 2 minutes pour écrire</span> les mots qui vous seront venus à l'esprit.",
+    "wizard.after.idleTime":"Écoutez le morceau en entier pour commencer",
+    "wizard.after.placeholder":"Écoutez le morceau en entier. Dès qu'il se termine, vous aurez 2 minutes pour écrire ici les premiers mots, images et associations que le morceau vous a évoqués. Séparez chaque mot par une virgule ou en appuyant sur Entrée (saut de ligne).",
+    "wizard.after.submitBtn":"Envoyer la réponse",
+    "wizard.after.playingPrefix":"Lecture en cours — ",
+    "wizard.after.playingSuffix":" au total",
+    "wizard.after.writingOpen":"Vous pouvez écrire maintenant",
+    "wizard.after.timerPrefix":"⏱ ",
+    "wizard.after.timerSuffix":" pour écrire",
+    "wizard.after.errEmpty":"Écrivez au moins un mot.",
+
+    "wizard.during.lede":"Appuyez pour écouter. <span class=\"voc\">Pendant que la musique joue</span>, écrivez chaque mot qui vous vient à l'esprit et <span class=\"voc\">appuyez sur Entrée pour l'ajouter</span>.",
+    "wizard.during.idleTime":"Écoutez le morceau en entier pour commencer",
+    "wizard.during.placeholder":"Écrivez un mot et appuyez sur Entrée…",
+    "wizard.during.playingPrefix":"Lecture en cours — ",
+    "wizard.during.playingMid":" au total. Écrivez chaque mot et ",
+    "wizard.during.playingEnter":"appuyez sur Entrée",
+    "wizard.during.pendingFinish":"Terminez d'écrire ce mot et appuyez sur Entrée pour continuer…",
+
+    "profile.intro":"La participation est totalement anonyme : nous ne vous demandons donc ni nom ni prénom. Avant de commencer, nous avons besoin que vous renseigniez quelques informations de base pour la recherche. Ces informations ne seront pas affichées sur la page et serviront exclusivement à des fins d'étude.",
+    "profile.sex":"Sexe *", "profile.sexHombre":"Homme", "profile.sexMujer":"Femme", "profile.sexOtro":"Autre",
+    "profile.age":"Âge *", "profile.age65":"65 ans ou plus",
+    "profile.music":"Avez-vous une formation musicale ? *", "profile.musicSi":"Oui", "profile.musicNo":"Non",
+    "profile.country":"Pays où vous vivez *", "profile.countryPlaceholder":"Sélectionnez un pays",
+    "profile.locationDefaultLabel":"Où vous vivez *",
+    "profile.locationDefaultPlaceholder":"Sélectionnez d'abord un pays ci-dessus",
+    "profile.locationSpainLabel":"Communauté autonome et province *",
+    "profile.ccaaPlaceholder":"Sélectionnez une communauté autonome",
+    "profile.provinciaPlaceholder":"Sélectionnez une province",
+    "profile.provinciaPlaceholderNoCcaa":"Choisissez d'abord une communauté autonome",
+    "profile.locationOtherLabel":"Province, région ou ville où vous résidez *",
+    "profile.locationOtherPlaceholder":"Indiquez votre province, région ou ville",
+    "profile.submitBtn":"Commencer",
+    "profile.errSex":"Sélectionnez votre sexe.",
+    "profile.errAge":"Sélectionnez votre âge.",
+    "profile.errMusic":"Indiquez si vous avez une formation musicale.",
+    "profile.errCountry":"Sélectionnez un pays.",
+    "profile.errCcaa":"Sélectionnez une communauté autonome.",
+    "profile.errProvincia":"Sélectionnez une province.",
+    "profile.errLocation":"Indiquez votre province, région ou ville.",
+
+    "confirm.thanks":"Merci beaucoup pour votre participation.",
+    "confirm.wordsAdded":" mot(s) ajouté(s) à l'atlas lexical, répartis entre les quatre compositions.",
+    "confirm.previewNote":" (Aperçu de prévisualisation : non partagé avec les autres visiteurs.)",
+    "confirm.noWords":"Aucun mot n'a été recueilli — ce n'est pas grave, merci quand même pour votre temps.",
+
+    "trabajo.title":"Mémoire de fin d'études",
+    "tfg.summary":"Cette étude explore l'interrelation entre la musique instrumentale, l'activation lexicale et la construction sémantique, en examinant comment l'expérience musicale peut évoquer des associations lexicales et faciliter des processus de signification même en l'absence de mots. À travers une étude de terrain menée auprès de 54 élèves du secondaire, la recherche montre que la musique instrumentale active des champs sémantiques partagés entre différents auditeurs, confirmant sa capacité à produire du sens.",
+    "tfg.soon":"Un lien vers le mémoire complet sera ajouté ici dès sa publication dans le dépôt institutionnel de l'UAL.",
+    "tfgfacts.k.0":"Autrice", "tfgfacts.k.1":"Directrice", "tfgfacts.k.2":"Co-directeur",
+    "tfgfacts.k.3":"Université", "tfgfacts.k.4":"Année universitaire", "tfgfacts.k.5":"Mention",
+    "tfgfacts.v.4":"2025 / 2026 — session de mai", "tfgfacts.v.5":"Mention très bien",
+
+    "bibliografia.title":"Bibliographie",
+    "bibliografia.lede":"Références citées dans De sono ad verbum :",
+
+    "contacto.title":"Contact",
+    "contacto.lede":"De sono ad verbum est un travail ouvert : chaque mot ajouté à l'atlas nourrit la recherche en cours. Pour nous écrire, c'est par ici.",
+    "contacto.correo":"E-mail",
+
+    "about.0.t":"Origine", "about.0.d":"Ce mémoire croise la philologie et la musique : il naît de l'intuition qu'une mélodie, sans un seul mot, peut activer le même type de sens que le langage verbal.",
+    "about.1.t":"Le stimulus musical", "about.1.d":"À la différence des études classiques de disponibilité lexicale, qui partent de centres d'intérêt thématiques verbaux, cette recherche utilise la musique instrumentale comme stimulus et laisse l'auditeur la traduire en mots.",
+    "about.2.t":"Musique et sens", "about.2.d":"Selon Umberto Eco et Iouri Lotman, la musique peut être comprise comme un langage secondaire : un système de signes capable de communiquer des valeurs de sens sans avoir besoin d'être traduit en mots.",
+    "about.3.t":"Sémiotique", "about.3.d":"Discipline qui étudie les processus culturels comme des processus de communication. Appliquée à la musique, elle analyse comment les sons — tout comme les signes linguistiques — peuvent produire du sens.",
+    "about.4.t":"Lexique mental", "about.4.d":"Le « dictionnaire mental » où sont stockés les mots avec leur sens, leurs usages et leurs relations avec d'autres mots. Un « macro-fichier de données » (Miranda García, 1993).",
+    "about.5.t":"Disponibilité lexicale", "about.5.d":"L'ensemble des mots qu'une personne active face à un stimulus donné, au-delà de ceux qu'elle emploie le plus souvent. Terme forgé par Michéa au milieu du XXe siècle.",
+
+    "research.0.t":"Résumé", "research.0.d":"Plutôt que de partir de centres d'intérêt thématiques verbaux, comme c'est l'usage dans les études de disponibilité lexicale, ce travail utilise la musique comme stimulus. Sa structure, divisée en mouvements, reproduit formellement le parcours conceptuel même du projet musical qu'elle étudie.",
+    "research.1.t":"Objectifs", "research.1.d":"Analyser la production lexicale générée par <i class=\"lat-term\">Abyssus</i> et <i class=\"lat-term\">Ad lucem</i> et observer quels champs sémantiques émergent ; déterminer si des stimuli musicaux différents génèrent des associations lexicales différentes ; et explorer comment le sexe, le niveau scolaire ou la formation musicale influencent cette production.",
+    "research.2.t":"Hypothèses", "research.2.d":"Que la musique peut favoriser des processus d'activation lexicale partagés entre auditeurs ; que des compositions aux caractéristiques expressives différentes génèrent des champs sémantiques différents ; et que les facteurs sociaux introduisent des nuances, même si le stimulus musical reste le plus influent.",
+    "research.3.t":"Résultats", "research.3.d":"Pour <i class=\"lat-term\">Abyssus</i>, les vocables les plus disponibles ont été <span class=\"voc\">« action »</span>, <span class=\"voc\">« film »</span>, <span class=\"voc\">« tension »</span> et <span class=\"voc\">« guerre »</span>, composant un champ associé au mouvement et au conflit. Pour <i class=\"lat-term\">Ad lucem</i>, en revanche, ont prédominé <span class=\"voc\">« calme »</span>, <span class=\"voc\">« tristesse »</span>, <span class=\"voc\">« relaxation »</span> et <span class=\"voc\">« paix »</span>, un univers lié à l'introspection et à l'émotion.",
+    "research.4.t":"Discussion", "research.4.d":"Bien qu'aucune des deux compositions ne contienne de contenu verbal explicite, les participants ont traduit l'expérience sonore en unités lexicales organisées autour de champs sémantiques reconnaissables, confirmant la musique instrumentale comme déclencheur de production lexicale.",
+    "research.5.t":"Conclusions", "research.5.d":"Le stimulus musical s'avère le principal facteur organisateur de la production lexicale observée : entre le son et le mot existe un espace symbolique où émotions, images et souvenirs se transforment, peu à peu, en sens. Ce passage, du son au mot, a été le véritable sujet de ce travail.",
+
+    "works.0.latin":'Du latin tardif <i class="lat-term">abyssus</i>, « abîme »',
+    "works.0.desc":"La première pièce du projet <i class=\"lat-term\">RA</i>. Elle naît de la perte et de la première fracture avec la réalité, où aucune structure claire n'existe encore : seulement un vide qui commence lentement à prendre forme.",
+    "works.0.instruments":"Violoncelle, violon, alto, euphonium, cor, piano, percussions",
+    "works.0.context":"Les participants ont associé leur écoute à l'action, à la tension et au conflit : <span class=\"voc\">« action »</span> et <span class=\"voc\">« film »</span> arrivent en tête de l'indice de disponibilité lexicale, suivis de <span class=\"voc\">« guerre »</span> et <span class=\"voc\">« bagarre »</span>.",
+    "works.1.latin":'Du latin <i class="lat-term">vortex, -ĭcis</i>, « tourbillon »',
+    "works.1.desc":"Une tentative de dépasser l'état introspectif d'<i class=\"lat-term\">Abyssus</i>, encore empreint de désorientation : elle transmet la sensation d'une avancée constante, mais sans destination claire.",
+    "works.1.instruments":"Piano, percussions, contrebasse, tuba, timbales, violoncelle, alto",
+    "works.1.context":"Elle ne faisait pas partie de l'étude de terrain originale — son nuage de mots ne grandit qu'avec ce qu'apportent les personnes qui participent ici.",
+    "works.2.latin":'Du latin <i class="lat-term">transmutatio, -ōnis</i>, « transformation », « changement »',
+    "works.2.desc":"Un point de bascule : face à la tension des pièces précédentes, apparaît une atmosphère introspective et contemplative, tournée vers l'équilibre et la reconstruction personnelle.",
+    "works.2.instruments":"Percussions, violoncelle, alto, piano, cor, timbales",
+    "works.2.context":"Elle ne faisait pas partie de l'étude de terrain originale — son nuage de mots ne grandit qu'avec ce qu'apportent les personnes qui participent ici.",
+    "works.3.latin":'Du latin <i class="lat-term">ad lucem</i>, « vers la lumière »',
+    "works.3.desc":"La dernière pièce de l'EP fonctionne comme une clôture symbolique du parcours : une ascension vers la réconciliation et le calme, après la fragmentation et la tension initiales d'<i class=\"lat-term\">Abyssus</i>.",
+    "works.3.instruments":"Piano, tuba, timbales, contrebasse, violoncelle, alto, cor",
+    "works.3.context":"L'écoute a activé <span class=\"voc\">« calme »</span>, <span class=\"voc\">« tristesse »</span> et <span class=\"voc\">« relaxation »</span> : un vocabulaire lié à la mémoire, à la sérénité et à l'émotion, très différent de celui d'<i class=\"lat-term\">Abyssus</i>.",
+
+    "method.0.t":"Sémiotique", "method.0.d":"La musique est comprise comme un système de signes — à la suite de Saussure, Peirce, Eco et Lotman — capable de communiquer des significations sans avoir besoin d'être traduit en mots.",
+    "method.1.t":"Écoute musicale", "method.1.d":"54 élèves de 1ʳᵉ et 3ᵉ année de l'ESO de l'IES Bahía de Almería écoutent, en classe, les compositions <i class=\"lat-term\">Abyssus</i> et <i class=\"lat-term\">Ad lucem</i> du projet <i class=\"lat-term\">RA</i>.",
+    "method.2.t":"Disponibilité lexicale", "method.2.d":"Les méthodes propres à la disponibilité lexicale sont appliquées pour observer quels mots émergent le plus fortement après chaque écoute.",
+    "method.3.t":"Recueil des mots", "method.3.d":"Après chaque pièce, les participants disposent de deux minutes pour noter librement les mots, émotions et images que la musique leur suggère.",
+    "method.4.t":"Analyse", "method.4.d":"Les réponses sont organisées au moyen de l'Indice de Disponibilité Lexicale (IDL), révélant les champs sémantiques activés par chaque œuvre.",
+
+    "timeline.0.t":"Naissance de l'idée", "timeline.0.d":"« La musique instrumentale peut-elle produire du sens et se traduire en mots ? » C'est de cette question que part le projet, qui croise philologie, sémiotique et composition.",
+    "timeline.1.t":"Conception méthodologique", "timeline.1.d":"Une étude qualitative et descriptive est définie, et <i class=\"lat-term\">Abyssus</i> et <i class=\"lat-term\">Ad lucem</i> sont choisies comme stimuli musicaux pour leur contraste sonore : la première, dense et tendue ; la seconde, lumineuse et sereine. Le matériel de l'étude est également préparé — l'écoute guidée et les deux minutes d'écriture ensuite — et son application en classe est définie.",
+    "timeline.2.t":"Composition musicale", "timeline.2.d":"Création du projet orchestral <i class=\"lat-term\">RA</i> — <i class=\"lat-term\">Abyssus</i>, <i class=\"lat-term\">Vortex</i>, <i class=\"lat-term\">Transmutatio</i> et <i class=\"lat-term\">Ad lucem</i> — avec MuseScore, publié en EP le 9 mai sur les plateformes numériques.",
+    "timeline.3.t":"Étude de terrain", "timeline.3.d":"Étude menée auprès de 54 élèves (25 garçons, 29 filles) de 1ʳᵉ et 3ᵉ année de l'ESO à l'IES Bahía de Almería, année scolaire 2025/2026.",
+    "timeline.4.t":"Analyse", "timeline.4.d":"Application des méthodes de disponibilité lexicale et interprétation des indices IDL obtenus pour chaque composition.",
+    "timeline.5.t":"Soutenance", "timeline.5.d":"Le mémoire a été soutenu le 23 juin à la Faculté des Lettres de l'Université d'Almería, devant un jury composé d'Elisabeth Fernández Martín (présidente), Eman Mhanna (secrétaire) et Yolanda del Pilar Cruz López (membre), et a obtenu la mention très bien.",
+
+    "keywords.0":"disponibilité lexicale", "keywords.1":"activation lexicale", "keywords.2":"sémiotique musicale",
+    "keywords.3":"musique instrumentale", "keywords.4":"sémantique", "keywords.5":"sens", "keywords.6":"langage",
+
+    "quotes.0":"La musique communique aussi lorsqu'elle n'utilise pas de mots.",
+    "quotes.1":"Écouter, c'est aussi interpréter.",
+    "quotes.2":"Le son peut activer du sens.",
+    "quotes.3":"Si le langage nomme le monde, la musique habite les espaces encore sans nom.",
+    "quotes.4":"Ce que nous ne pouvons exprimer par des mots trouve, dans la musique, un refuge où il peut être compris."
+  }
+};
+
+const LANG_LOCALE = {es:"es-ES", en:"en-US", fr:"fr-FR"};
+let currentLang = "es";
+try{
+  const saved = localStorage.getItem("dsav_lang");
+  if(saved && I18N[saved]) currentLang = saved;
+}catch(e){}
+
+function t(key, lang){
+  lang = lang || currentLang;
+  const dict = I18N[lang] || I18N.es;
+  if(Object.prototype.hasOwnProperty.call(dict, key)) return dict[key];
+  if(Object.prototype.hasOwnProperty.call(I18N.es, key)) return I18N.es[key];
+  return key;
+}
+
+/* Nombres de país localizados sin tener que traducir ~195 topónimos a
+   mano: el navegador ya los conoce (Intl.DisplayNames). Si no estuviera
+   disponible, se cae al nombre en español que ya trae COUNTRY_META. */
+function countryName(code, lang){
+  lang = lang || currentLang;
+  if(lang !== "es" && typeof Intl !== "undefined" && Intl.DisplayNames){
+    try{
+      const dn = new Intl.DisplayNames([LANG_LOCALE[lang]||lang], {type:"region"});
+      const n = dn.of(code);
+      if(n && n !== code) return n;
+    }catch(e){}
+  }
+  return (COUNTRY_META[code] && COUNTRY_META[code][2]) || code;
+}
+
+/* Funciones registradas por otras partes del guion para "refrescarse" de
+   forma segura al cambiar de idioma: cada una debe ser idempotente (volver
+   a construir solo controles de formulario / listas sin estado propio
+   adjunto — nunca tarjetas con animación de aparición ya disparada, ni
+   nada con un reproductor de audio enganchado, que se gestionan con
+   atributos data-i18n en su lugar). */
+const langRefreshHooks = [];
+function onLangRefresh(fn){ langRefreshHooks.push(fn); }
+
+/* Títulos y ledes con [data-split-words] quedan trozeados en <span class="w">
+   por palabra (ver TEXT REVEALS, más abajo) para la animación de aparición.
+   Si el cambio de idioma solo reescribiera el textContent, se perdería ese
+   trozeado (y cualquier resaltado de nombres/números ya aplicado dentro).
+   Por eso, para esos elementos en concreto, volvemos a trocear el texto ya
+   traducido y lo dejamos visible al momento (no hace falta repetir la
+   animación de scroll, el usuario ya ha visto la sección). splitWords/
+   revealWords/highlightWordSpans son funciones declaradas más abajo en este
+   mismo script, pero al ser "function declarations" quedan disponibles
+   desde el principio (hoisting), así que es seguro llamarlas aquí. */
+function reRevealSplitWords(el){
+  if(typeof splitWords !== "function") return;
+  splitWords(el);
+  if(typeof revealWords === "function") revealWords(el, 0);
+}
+/* Barrido de atributos data-i18n* limitado a una raíz concreta (por
+   defecto, todo el documento). Se separa de applyI18n() porque el asistente
+   de participación reconstruye su panel (panel.innerHTML = `...`) muchas
+   veces después de la pasada inicial -- cada vez que suena una pieza nueva,
+   al confirmar, etc. -- y ese contenido nuevo also lleva sus propios
+   atributos data-i18n, pero nadie volvería a barrerlos si no hay un
+   observador vigilando ese contenedor (ver más abajo). */
+function applyI18nScope(root){
+  root.querySelectorAll("[data-i18n]").forEach(el=>{
+    el.textContent = t(el.getAttribute("data-i18n"));
+    if(el.hasAttribute("data-split-words")) reRevealSplitWords(el);
+  });
+  root.querySelectorAll("[data-i18n-html]").forEach(el=>{
+    el.innerHTML = t(el.getAttribute("data-i18n-html"));
+  });
+  root.querySelectorAll("[data-i18n-placeholder]").forEach(el=>{
+    el.setAttribute("placeholder", t(el.getAttribute("data-i18n-placeholder")));
+  });
+  root.querySelectorAll("[data-i18n-aria]").forEach(el=>{
+    const parts = el.getAttribute("data-i18n-aria").split("|");
+    const key = parts[0], suffix = parts[1]||"";
+    el.setAttribute("aria-label", t(key)+suffix);
+  });
+}
+function applyI18n(){
+  document.documentElement.lang = currentLang;
+  applyI18nScope(document);
+  if(typeof highlightWordSpans === "function" && typeof $ === "function"){
+    highlightWordSpans($("#obras .section-lede"), ["Abyssus","Vortex","Transmutatio","Ad","lucem","RA"], "hl-name");
+    highlightWordSpans($("#resultados .section-lede"), ["Abyssus","Ad","lucem"], "hl-name");
+    highlightWordSpans($("#resultados .section-lede"), ["96","311","113","323","vocablos","palabras","word","types","tokens","mots","vocables"], "hl-num");
+    highlightWordSpans($("#bibliografia .section-lede"), ["De","sono","ad","verbum"], "hl-name");
+    highlightWordSpans($("#contacto .section-lede"), ["De","sono","ad","verbum"], "hl-name");
+  }
+  langRefreshHooks.forEach(fn=>{ try{ fn(); }catch(e){} });
+}
+
+/* El asistente de participación reescribe #wizard-panel entero en cada
+   paso (perfil → intro → cada pieza → confirmación), mucho después de que
+   la pasada inicial de applyI18n() ya haya pasado. Sin esto, cualquier
+   paso al que se llegue tras cambiar de idioma (o directamente, si se
+   entra ya con el idioma guardado) se vería en español salvo el primer
+   paso, que sí coincide con el barrido inicial. Un MutationObserver sobre
+   ese contenedor concreto -- no sobre todo el documento, que sería
+   innecesariamente costoso -- mantiene cada paso nuevo traducido al
+   instante, venga de donde venga. */
+(function observeWizardPanel(){
+  const panelEl = document.getElementById("wizard-panel");
+  if(!panelEl || typeof MutationObserver === "undefined") return;
+  const opts = {childList:true, subtree:true};
+  /* applyI18nScope() en sí misma reescribe textContent/innerHTML dentro de
+     panelEl, lo que generaría nuevas mutaciones y, con el observador activo
+     de por medio, un bucle infinito (observa → traduce → eso mutа → se
+     vuelve a observar → ...). Se desconecta justo antes de traducir y se
+     vuelve a conectar después, para reaccionar solo a los cambios que no
+     provoca ella misma (p. ej., un paso nuevo del asistente). */
+  const mo = new MutationObserver(()=>{
+    mo.disconnect();
+    applyI18nScope(panelEl);
+    mo.observe(panelEl, opts);
+  });
+  mo.observe(panelEl, opts);
+})();
+
+function setLang(lang){
+  if(!I18N[lang] || lang===currentLang){
+    if(!I18N[lang]) return;
+  }
+  currentLang = lang;
+  try{ localStorage.setItem("dsav_lang", lang); }catch(e){}
+  applyI18n();
+  const sel = document.getElementById("lang-switch");
+  if(sel && sel.value !== lang) sel.value = lang;
+}
+
+(function wireLangSwitch(){
+  const sel = document.getElementById("lang-switch");
+  if(!sel) return;
+  sel.value = currentLang;
+  sel.addEventListener("change", (e)=>{ setLang(e.target.value); });
+})();
+
+
 
 /* ---------- estado compartido del Atlas (participación de la comunidad) ----------
    Fuente de verdad: Firestore (base de datos en tiempo real), para que las
@@ -2194,12 +2901,12 @@ const AudioEngine = (function(){
 /* ================= SOBRE EL PROYECTO ================= */
 (function buildAbout(){
   const grid = $("#about-grid");
-  ABOUT.forEach(c=>{
+  ABOUT.forEach((c,i)=>{
     const div = document.createElement("div");
     div.className = "about-card";
     div.style.borderLeft = `3px solid ${c.color}`;
     div.style.background = `linear-gradient(160deg, color-mix(in srgb, ${c.color} 22%, var(--bg-card)) 0%, var(--bg-card) 75%)`;
-    div.innerHTML = `<h3>${c.t}</h3><p>${c.d}</p>`;
+    div.innerHTML = `<h3 data-i18n-html="about.${i}.t">${t('about.'+i+'.t')}</h3><p data-i18n-html="about.${i}.d">${t('about.'+i+'.d')}</p>`;
     grid.appendChild(div);
   });
   fadeInOnView("#about-grid .about-card");
@@ -2209,12 +2916,12 @@ const AudioEngine = (function(){
 (function buildResearch(){
   const grid = $("#research-grid");
   if(!grid) return;
-  RESEARCH.forEach(c=>{
+  RESEARCH.forEach((c,i)=>{
     const div = document.createElement("div");
     div.className = "about-card";
     div.style.borderLeft = `3px solid ${c.color}`;
     div.style.background = `linear-gradient(160deg, color-mix(in srgb, ${c.color} 22%, var(--bg-card)) 0%, var(--bg-card) 75%)`;
-    div.innerHTML = `<h3>${c.t}</h3><p>${c.d}</p>`;
+    div.innerHTML = `<h3 data-i18n-html="research.${i}.t">${t('research.'+i+'.t')}</h3><p data-i18n-html="research.${i}.d">${t('research.'+i+'.d')}</p>`;
     grid.appendChild(div);
   });
   fadeInOnView("#research-grid .about-card");
@@ -2346,29 +3053,30 @@ function startCoverAnimation(){
 
 function buildWorks(){
   const grid = $("#works-grid");
-  WORKS.forEach(work=>{
+  WORKS.forEach((work,i)=>{
     const card = document.createElement("article");
     card.className = "work-card";
     card.style.setProperty("--wc-accent", work.color);
     card.dataset.accent = work.color;
+    const badgeKey = work.studied ? "works.badge.studied" : "works.badge.open";
     card.innerHTML = `
       <div class="work-cover"><canvas></canvas></div>
       <div class="work-kicker">
         <div>
-          <div class="work-lat mono">${work.latin}</div>
+          <div class="work-lat mono" data-i18n-html="works.${i}.latin">${t('works.'+i+'.latin')}</div>
           <h3 class="work-name">${work.name}</h3>
         </div>
-        <span class="work-badge mono" style="color:${work.color};border-color:${work.color}">${work.studied ? "Estudio de campo" : "Atlas abierto"}</span>
+        <span class="work-badge mono" style="color:${work.color};border-color:${work.color}" data-i18n="${badgeKey}">${t(badgeKey)}</span>
       </div>
-      <p class="work-desc">${work.desc}</p>
+      <p class="work-desc" data-i18n-html="works.${i}.desc">${t('works.'+i+'.desc')}</p>
       <div class="work-meta mono">
         <span><b>${work.bpm}</b> BPM</span>
         <span><b>${work.duration}</b> EP</span>
-        <span>${work.instruments}</span>
+        <span data-i18n="works.${i}.instruments">${t('works.'+i+'.instruments')}</span>
       </div>
-      <p class="work-context">"${work.context}"</p>
+      <p class="work-context">"<span data-i18n-html="works.${i}.context">${t('works.'+i+'.context')}</span>"</p>
       <div class="work-player">
-        <button class="play-btn" aria-label="Reproducir ${work.name}">
+        <button class="play-btn" aria-label="${t('works.playAria')} ${work.name}" data-i18n-aria="works.playAria| ${work.name}">
           <svg class="ic-play" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
           <svg class="ic-pause" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="display:none"><path d="M6 4h4v16H6zM14 4h4v16h-4z"/></svg>
         </button>
@@ -2493,8 +3201,8 @@ function setupPlayer(work, card, btn, waveCanvas, timeEl){
     step.className = "method-step";
     step.innerHTML = `
       <div class="method-body">
-        <h3>${m.t}</h3>
-        <p>${m.d}</p>
+        <h3 data-i18n-html="method.${i}.t">${t('method.'+i+'.t')}</h3>
+        <p data-i18n-html="method.${i}.d">${t('method.'+i+'.d')}</p>
         <div class="method-bar"><i></i></div>
       </div>`;
     track.appendChild(step);
@@ -2657,12 +3365,13 @@ const WordCloud = (function(){
     if(idx<0){ card.classList.remove("show"); selectedIdx=-1; return; }
     selectedIdx = idx;
     const it = items[idx];
+    const catKey = it.cat==="Estudio de campo" ? "cat.fieldStudy" : it.cat==="Aportación de la comunidad" ? "cat.community" : null;
     card.innerHTML = `
       <div class="cw" style="color:${colorFor(it.work)}">${it.word}</div>
       <dl>
-        <dt>IDL</dt><dd>${it.idl.toFixed(4)}</dd>
-        <dt>Composición</dt><dd><i>${(WORKS.find(w=>w.id===it.work)||{}).name || it.work}</i></dd>
-        <dt>Categoría</dt><dd>${it.cat}</dd>
+        <dt>${t('cloud.cardIdl')}</dt><dd>${it.idl.toFixed(4)}</dd>
+        <dt>${t('cloud.cardComposicion')}</dt><dd><i>${(WORKS.find(w=>w.id===it.work)||{}).name || it.work}</i></dd>
+        <dt>${t('cloud.cardCategoria')}</dt><dd>${catKey ? t(catKey) : it.cat}</dd>
       </dl>`;
     let cx = px+16, cy = py-10;
     if(cx+260>W) cx = px-276;
@@ -2673,14 +3382,15 @@ const WordCloud = (function(){
 
   function buildPills(){
     const wrapPills = $("#cloud-controls");
+    const activeKey = wrapPills.querySelector(".pill.active")?.dataset.k || "all";
     const defs = [
-      {k:"all",l:"Todas",c:""},
+      {k:"all",l:t('cloud.filterAll'),c:""},
       {k:"abyssus",l:"Abyssus",c:"var(--abyssus)"},
       {k:"vortex",l:"Vortex",c:"var(--vortex)"},
       {k:"transmutatio",l:"Transmutatio",c:"var(--transmutatio)"},
       {k:"adlucem",l:"Ad lucem",c:"var(--adlucem)"},
     ];
-    wrapPills.innerHTML = defs.map(d=>`<button class="pill ${d.k==='all'?'active':''}" data-k="${d.k}" ${d.c?`data-accent="${d.c}" style="--pill-accent:${d.c}"`:""}>${d.l}</button>`).join("");
+    wrapPills.innerHTML = defs.map(d=>`<button class="pill ${d.k===activeKey?'active':''}" data-k="${d.k}" ${d.c?`data-accent="${d.c}" style="--pill-accent:${d.c}"`:""}>${d.l}</button>`).join("");
     $$(".pill",wrapPills).forEach(btn=>{
       btn.addEventListener("click",()=>{
         $$(".pill",wrapPills).forEach(b=>b.classList.remove("active"));
@@ -2691,6 +3401,7 @@ const WordCloud = (function(){
       });
     });
   }
+  onLangRefresh(buildPills);
 
   buildPills();
   resize();
@@ -2735,15 +3446,16 @@ const WordCloud = (function(){
     const totalPart = subs.reduce((a,s)=>a+(s.words?s.words.length:0),0);
     let last = "—";
     const stamps = subs.map(s=>s.ts).filter(Boolean);
-    if(stamps.length) last = new Date(Math.max(...stamps)).toLocaleDateString("es-ES",{day:"2-digit",month:"short"});
+    if(stamps.length) last = new Date(Math.max(...stamps)).toLocaleDateString(LANG_LOCALE[currentLang]||"es-ES",{day:"2-digit",month:"short"});
     const tiles = [
-      {n: liveWords.length, l:"Palabras en el atlas"},
-      {n: totalPart, l:"Palabras de la comunidad"},
-      {n: subs.length, l:"Participaciones registradas"},
-      {n: last, l:"Última aportación"},
+      {n: liveWords.length, l:t('stats.wordsAtlas')},
+      {n: totalPart, l:t('stats.wordsCommunity')},
+      {n: subs.length, l:t('stats.submissions')},
+      {n: last, l:t('stats.lastContribution')},
     ];
-    strip.innerHTML = tiles.map(t=>`<div class="stat-tile"><div class="stat-num mono">${t.n}</div><div class="stat-label">${t.l}</div></div>`).join("");
+    strip.innerHTML = tiles.map(tile=>`<div class="stat-tile"><div class="stat-num mono">${tile.n}</div><div class="stat-label">${tile.l}</div></div>`).join("");
   }
+  onLangRefresh(renderStats);
   renderStats();
 
   return {submitWords, submitSession, refresh};
@@ -2946,7 +3658,7 @@ const WorldMap = (function(){
   function updateHover(px,py){
     hoverMarker = hitTest(px,py);
     if(hoverMarker){
-      tip.innerHTML = `<b>${hoverMarker.count}</b> ${hoverMarker.count===1?"participación":"participaciones"} · ${hoverMarker.name}`;
+      tip.innerHTML = `<b>${hoverMarker.count}</b> ${hoverMarker.count===1?t('map.participationOne'):t('map.participationMany')} · ${countryName(hoverMarker.code)}`;
       tip.style.left = px+"px"; tip.style.top = py+"px";
       tip.classList.add("show");
     } else {
@@ -3198,10 +3910,10 @@ const WorldMap = (function(){
      escuchar nada), a petición de la usuaria: por eso "Sobre ti" va primero
      en los pasos, y las cuatro canciones y la confirmación van después. */
   function stepLabels(){
-    return ["Sobre ti"].concat(SONG_ORDER.map((id,i)=>{
+    return [t('wizard.stepAbout')].concat(SONG_ORDER.map((id,i)=>{
       const w = WORKS.find(x=>x.id===id);
       return (i+1)+" · "+w.name;
-    })).concat(["Confirmación"]);
+    })).concat([t('wizard.stepConfirm')]);
   }
 
   function renderSteps(){
@@ -3217,6 +3929,7 @@ const WorldMap = (function(){
     const currentWork = (profileCollected && pieceIndex < SONG_ORDER.length) ? WORKS.find(w=>w.id===SONG_ORDER[pieceIndex]) : null;
     if(currentWork) stepsEl.style.setProperty("--wiz-accent", currentWork.color);
   }
+  onLangRefresh(renderSteps);
 
   function stopAudio(workId){
     if(playing){ AudioEngine.stop(workId); releasePlayback(workId); }
@@ -3226,8 +3939,8 @@ const WorldMap = (function(){
   function renderIntro(){
     panel.innerHTML = `
       <div class="wizard-listen">
-        <p class="profile-lede" style="max-width:520px;">Ahora vas a escuchar las <span class="voc">cuatro composiciones</span>, una tras otra. En <span class="voc">dos de ellas</span> escribirás las palabras que te vengan a la mente <span class="voc">mientras suena la música</span>; en <span class="voc">las otras dos</span>, escucharás la pieza completa y después <span class="voc">tendrás dos minutos para escribir</span>. Te iremos indicando en cada momento qué toca hacer.</p>
-        <button class="psubmit" id="wiz-start">Comenzar</button>
+        <p class="profile-lede" style="max-width:520px;" data-i18n-html="wizard.introLede">Ahora vas a escuchar las <span class="voc">cuatro composiciones</span>, una tras otra. En <span class="voc">dos de ellas</span> escribirás las palabras que te vengan a la mente <span class="voc">mientras suena la música</span>; en <span class="voc">las otras dos</span>, escucharás la pieza completa y después <span class="voc">tendrás dos minutos para escribir</span>. Te iremos indicando en cada momento qué toca hacer.</p>
+        <button class="psubmit" id="wiz-start" data-i18n="wizard.introStart">Comenzar</button>
       </div>`;
     $("#wiz-start").addEventListener("click", ()=>{ runPiece(); });
   }
@@ -3249,7 +3962,7 @@ const WorldMap = (function(){
 
   async function finishSession(){
     renderSteps();
-    panel.innerHTML = `<p class="profile-lede">Enviando…</p>`;
+    panel.innerHTML = `<p class="profile-lede" data-i18n="wizard.sending">Enviando…</p>`;
     const results = await WordCloud.submitSession(sessionId, responses, profileData);
     const localOnly = results.some(r=>r && r.code==="no-artifact");
     renderConfirm(localOnly);
@@ -3263,18 +3976,18 @@ const WorldMap = (function(){
     panel.innerHTML = `
       <div class="wizard-listen">
         <div class="w-title" style="color:${work.color}">${work.name}</div>
-        <p class="profile-lede" style="max-width:520px;">Escucha la pieza completa. Cuando termine, <span class="voc">tendrás 2 minutos para escribir</span> las palabras que te hayan venido a la mente.</p>
+        <p class="profile-lede" style="max-width:520px;" data-i18n-html="wizard.after.lede">Escucha la pieza completa. Cuando termine, <span class="voc">tendrás 2 minutos para escribir</span> las palabras que te hayan venido a la mente.</p>
         <div class="p-play">
-          <button class="play-btn p-play-btn" aria-label="Escuchar ${work.name}">
+          <button class="play-btn p-play-btn" aria-label="${t('wizard.listenAria')} ${work.name}" data-i18n-aria="wizard.listenAria| ${work.name}">
             <svg class="ic-play" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
             <svg class="ic-pause" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="display:none"><path d="M6 4h4v16H6zM14 4h4v16h-4z"/></svg>
           </button>
-          <span class="work-time mono p-time">Escucha la pieza completa para empezar</span>
+          <span class="work-time mono p-time" data-i18n="wizard.after.idleTime">Escucha la pieza completa para empezar</span>
         </div>
         <div class="wiz-timer mono" id="wiz-timer" hidden></div>
-        <textarea class="pinput" id="wiz-input" disabled style="max-width:520px;" placeholder="Escucha la pieza entera. En cuanto termine su reproducción, tendrá 2 minutos para escribir aquí las primeras palabras, imágenes y asociaciones que le hayan venido a la mente al escuchar dicha pieza. Separa cada palabra con una coma o pulsando Intro (salto de línea)."></textarea>
+        <textarea class="pinput" id="wiz-input" disabled style="max-width:520px;" placeholder="Escucha la pieza entera. En cuanto termine su reproducción, tendrá 2 minutos para escribir aquí las primeras palabras, imágenes y asociaciones que le hayan venido a la mente al escuchar dicha pieza. Separa cada palabra con una coma o pulsando Intro (salto de línea)." data-i18n-placeholder="wizard.after.placeholder"></textarea>
         <div style="display:flex;align-items:center;gap:1rem;flex-wrap:wrap;justify-content:center;">
-          <button class="psubmit" id="wiz-submit" style="--wc-accent:${work.color}" disabled>Enviar respuesta</button>
+          <button class="psubmit" id="wiz-submit" style="--wc-accent:${work.color}" disabled data-i18n="wizard.after.submitBtn">Enviar respuesta</button>
           <span class="p-feedback" id="wiz-feedback"></span>
         </div>
       </div>`;
@@ -3295,12 +4008,12 @@ const WorldMap = (function(){
       btn.classList.remove("playing");
       btn.querySelector(".ic-play").style.display="";
       btn.querySelector(".ic-pause").style.display="none";
-      if(!writingOpen) timeEl.textContent = "Escucha la pieza completa para empezar";
+      if(!writingOpen) timeEl.textContent = t('wizard.after.idleTime');
     }
 
     function updateTimerText(){
       const m = Math.floor(timeLeft/60), s = timeLeft%60;
-      timerEl.textContent = "⏱ "+m+":"+String(s).padStart(2,"0")+" para escribir";
+      timerEl.textContent = t('wizard.after.timerPrefix')+m+":"+String(s).padStart(2,"0")+t('wizard.after.timerSuffix');
     }
 
     function openWriting(){
@@ -3309,7 +4022,7 @@ const WorldMap = (function(){
       ta.disabled = false;
       submit.disabled = false;
       ta.focus();
-      timeEl.innerHTML = '<span class="voc">Ya puedes escribir</span>';
+      timeEl.innerHTML = '<span class="voc">'+t('wizard.after.writingOpen')+'</span>';
       timerEl.hidden = false;
       timeLeft = 120;
       updateTimerText();
@@ -3354,12 +4067,12 @@ const WorldMap = (function(){
       btn.classList.add("playing");
       btn.querySelector(".ic-play").style.display="none";
       btn.querySelector(".ic-pause").style.display="";
-      timeEl.textContent = "Reproduciendo — "+fmtTime(duration)+" en total";
+      timeEl.textContent = t('wizard.after.playingPrefix')+fmtTime(duration)+t('wizard.after.playingSuffix');
     });
 
     submit.addEventListener("click", ()=>{
       const raw = ta.value.trim();
-      if(!raw){ feedback.textContent = "Escribe al menos una palabra."; return; }
+      if(!raw){ feedback.textContent = t('wizard.after.errEmpty'); return; }
       clearCountdown();
       lockAndSubmit();
     });
@@ -3372,15 +4085,15 @@ const WorldMap = (function(){
     panel.innerHTML = `
       <div class="wizard-listen">
         <div class="w-title" style="color:${work.color}">${work.name}</div>
-        <p class="profile-lede" style="max-width:520px;">Pulsa para escuchar. <span class="voc">Mientras suena la música</span>, escribe cada palabra que te venga a la mente y <span class="voc">pulsa Intro para añadirla</span>.</p>
+        <p class="profile-lede" style="max-width:520px;" data-i18n-html="wizard.during.lede">Pulsa para escuchar. <span class="voc">Mientras suena la música</span>, escribe cada palabra que te venga a la mente y <span class="voc">pulsa Intro para añadirla</span>.</p>
         <div class="p-play">
-          <button class="play-btn p-play-btn" aria-label="Escuchar ${work.name}">
+          <button class="play-btn p-play-btn" aria-label="${t('wizard.listenAria')} ${work.name}" data-i18n-aria="wizard.listenAria| ${work.name}">
             <svg class="ic-play" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
             <svg class="ic-pause" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="display:none"><path d="M6 4h4v16H6zM14 4h4v16h-4z"/></svg>
           </button>
-          <span class="work-time mono p-time">Escucha la pieza completa para empezar</span>
+          <span class="work-time mono p-time" data-i18n="wizard.during.idleTime">Escucha la pieza completa para empezar</span>
         </div>
-        <textarea class="pinput pinput-live" id="wiz-live-input" rows="1" disabled style="max-width:520px;" placeholder="Escribe una palabra y pulsa Intro…"></textarea>
+        <textarea class="pinput pinput-live" id="wiz-live-input" rows="1" disabled style="max-width:520px;" placeholder="Escribe una palabra y pulsa Intro…" data-i18n-placeholder="wizard.during.placeholder"></textarea>
         <div class="wiz-live-words" id="wiz-live-words"></div>
         <span class="p-feedback" id="wiz-feedback"></span>
       </div>`;
@@ -3453,7 +4166,7 @@ const WorldMap = (function(){
         releasePlayback(work.id);
         if(input.value.trim().length > 0){
           pendingFinish = true;
-          timeEl.textContent = "Termina de escribir esa palabra y pulsa Intro para continuar…";
+          timeEl.textContent = t('wizard.during.pendingFinish');
         } else {
           finish();
         }
@@ -3465,58 +4178,62 @@ const WorldMap = (function(){
       btn.classList.add("playing");
       btn.querySelector(".ic-play").style.display="none";
       btn.querySelector(".ic-pause").style.display="";
-      timeEl.innerHTML = "Reproduciendo — "+fmtTime(r.duration)+' en total. Escribe cada palabra y <span class="voc">pulsa Intro</span>.';
+      timeEl.innerHTML = t('wizard.during.playingPrefix')+fmtTime(r.duration)+t('wizard.during.playingMid')+'<span class="voc">'+t('wizard.during.playingEnter')+'</span>.';
     });
   }
 
   function renderProfile(){
     let sex = null, age = null, music = null, country = null;
     let ccaa = null, provincia = null, locationText = "";
-    const countryOptions = Object.keys(COUNTRY_META).map(code=>
-      `<option value="${code}">${COUNTRY_META[code][2]}</option>`).join("");
+    function buildCountryOptions(){
+      return Object.keys(COUNTRY_META)
+        .map(code=>({code, name:countryName(code)}))
+        .sort((a,b)=>a.name.localeCompare(b.name, currentLang))
+        .map(c=>`<option value="${c.code}" ${country===c.code?"selected":""}>${c.name}</option>`).join("");
+    }
     panel.innerHTML = `
       <div class="wizard-profile">
-        <p class="profile-lede">La participación es totalmente anónima, por lo que no te pedimos tu nombre ni apellidos. Antes de empezar, necesitamos que completes unos datos básicos para la investigación. Esta información no se mostrará en la página y se utilizará exclusivamente con fines de estudio.</p>
+        <p class="profile-lede" data-i18n="profile.intro">La participación es totalmente anónima, por lo que no te pedimos tu nombre ni apellidos. Antes de empezar, necesitamos que completes unos datos básicos para la investigación. Esta información no se mostrará en la página y se utilizará exclusivamente con fines de estudio.</p>
         <div class="profile-field">
-          <div class="profile-label">Sexo *</div>
+          <div class="profile-label" data-i18n="profile.sex">Sexo *</div>
           <div class="profile-options" id="profile-sex">
-            <button type="button" class="profile-opt" data-v="hombre">Hombre</button>
-            <button type="button" class="profile-opt" data-v="mujer">Mujer</button>
-            <button type="button" class="profile-opt" data-v="otro">Otro</button>
+            <button type="button" class="profile-opt" data-v="hombre" data-i18n="profile.sexHombre">Hombre</button>
+            <button type="button" class="profile-opt" data-v="mujer" data-i18n="profile.sexMujer">Mujer</button>
+            <button type="button" class="profile-opt" data-v="otro" data-i18n="profile.sexOtro">Otro</button>
           </div>
         </div>
         <div class="profile-field">
-          <div class="profile-label">Edad *</div>
+          <div class="profile-label" data-i18n="profile.age">Edad *</div>
           <div class="profile-options" id="profile-age">
             <button type="button" class="profile-opt" data-v="10-13">10–13</button>
             <button type="button" class="profile-opt" data-v="14-19">14–19</button>
             <button type="button" class="profile-opt" data-v="20-34">20–34</button>
             <button type="button" class="profile-opt" data-v="35-54">35–54</button>
             <button type="button" class="profile-opt" data-v="55-64">55–64</button>
-            <button type="button" class="profile-opt" data-v="65+">65 o más</button>
+            <button type="button" class="profile-opt" data-v="65+" data-i18n="profile.age65">65 o más</button>
           </div>
         </div>
         <div class="profile-field">
-          <div class="profile-label">¿Tienes estudios musicales? *</div>
+          <div class="profile-label" data-i18n="profile.music">¿Tienes estudios musicales? *</div>
           <div class="profile-options" id="profile-music">
-            <button type="button" class="profile-opt" data-v="si">Sí</button>
-            <button type="button" class="profile-opt" data-v="no">No</button>
+            <button type="button" class="profile-opt" data-v="si" data-i18n="profile.musicSi">Sí</button>
+            <button type="button" class="profile-opt" data-v="no" data-i18n="profile.musicNo">No</button>
           </div>
         </div>
         <div class="profile-field">
-          <div class="profile-label">País donde vives *</div>
+          <div class="profile-label" data-i18n="profile.country">País donde vives *</div>
           <select id="profile-country" class="profile-select">
-            <option value="" disabled selected>Selecciona un país</option>
-            ${countryOptions}
+            <option value="" disabled selected data-i18n="profile.countryPlaceholder">Selecciona un país</option>
+            ${buildCountryOptions()}
           </select>
         </div>
         <div class="profile-field">
-          <div class="profile-label" id="profile-location-label">Dónde vives *</div>
+          <div class="profile-label" id="profile-location-label" data-i18n="profile.locationDefaultLabel">Dónde vives *</div>
           <div id="profile-location-body">
-            <input type="text" class="profile-age-input" style="max-width:320px;" disabled placeholder="Primero selecciona un país arriba">
+            <input type="text" class="profile-age-input" style="max-width:320px;" disabled placeholder="Primero selecciona un país arriba" data-i18n-placeholder="profile.locationDefaultPlaceholder">
           </div>
         </div>
-        <button class="psubmit" id="profile-submit">Empezar</button>
+        <button class="psubmit" id="profile-submit" data-i18n="profile.submitBtn">Empezar</button>
         <span class="p-feedback" id="profile-feedback"></span>
       </div>`;
 
@@ -3541,19 +4258,20 @@ const WorldMap = (function(){
     function renderLocationField(){
       const label = $("#profile-location-label");
       const body = $("#profile-location-body");
+      if(!label || !body) return;
       if(country === "ES"){
-        label.textContent = "Comunidad autónoma y provincia *";
+        label.textContent = t('profile.locationSpainLabel');
         const ccaaOptions = Object.keys(CCAA_PROVINCIAS).map(c=>
           `<option value="${c}" ${ccaa===c?"selected":""}>${c}</option>`).join("");
         const provinciaOptions = ccaa ? CCAA_PROVINCIAS[ccaa].map(p=>
           `<option value="${p}" ${provincia===p?"selected":""}>${p}</option>`).join("") : "";
         body.innerHTML = `
           <select id="profile-ccaa" class="profile-select" style="margin-bottom:.6rem;">
-            <option value="" disabled ${ccaa?"":"selected"}>Selecciona una comunidad autónoma</option>
+            <option value="" disabled ${ccaa?"":"selected"}>${t('profile.ccaaPlaceholder')}</option>
             ${ccaaOptions}
           </select>
           <select id="profile-provincia" class="profile-select" ${ccaa?"":"disabled"}>
-            <option value="" disabled selected>${ccaa?"Selecciona una provincia":"Primero elige una comunidad autónoma"}</option>
+            <option value="" disabled selected>${ccaa?t('profile.provinciaPlaceholder'):t('profile.provinciaPlaceholderNoCcaa')}</option>
             ${provinciaOptions}
           </select>`;
         $("#profile-ccaa").addEventListener("change", (e)=>{
@@ -3566,16 +4284,30 @@ const WorldMap = (function(){
           provSel.addEventListener("change", (e)=>{ provincia = e.target.value || null; });
         }
       } else if(country){
-        label.textContent = "Provincia, región o ciudad donde resides *";
-        body.innerHTML = `<input type="text" id="profile-location-text" class="profile-age-input" style="max-width:320px;" placeholder="Escribe tu provincia, región o ciudad">`;
+        label.textContent = t('profile.locationOtherLabel');
+        body.innerHTML = `<input type="text" id="profile-location-text" class="profile-age-input" style="max-width:320px;" placeholder="${t('profile.locationOtherPlaceholder')}">`;
         const txt = $("#profile-location-text");
         txt.value = locationText;
         txt.addEventListener("input", (e)=>{ locationText = e.target.value; });
       } else {
-        label.textContent = "Dónde vives *";
-        body.innerHTML = `<input type="text" class="profile-age-input" style="max-width:320px;" disabled placeholder="Primero selecciona un país arriba">`;
+        label.textContent = t('profile.locationDefaultLabel');
+        body.innerHTML = `<input type="text" class="profile-age-input" style="max-width:320px;" disabled placeholder="${t('profile.locationDefaultPlaceholder')}">`;
       }
     }
+    /* Seguro frente a cambio de idioma a mitad de este paso: vuelve a
+       pintar el desplegable de país (nombres localizados) y el campo de
+       ubicación tal y como estaban (misma selección), sin perder nada de
+       lo que la persona ya hubiera elegido. */
+    onLangRefresh(()=>{
+      const sel = $("#profile-country");
+      if(!sel) return;
+      const placeholder = sel.querySelector('option[value=""]');
+      if(placeholder) placeholder.textContent = t('profile.countryPlaceholder');
+      Array.from(sel.options).forEach(opt=>{
+        if(opt.value) opt.textContent = countryName(opt.value);
+      });
+      renderLocationField();
+    });
 
     $("#profile-country").addEventListener("change", (e)=>{
       country = e.target.value || null;
@@ -3585,15 +4317,15 @@ const WorldMap = (function(){
 
     $("#profile-submit").addEventListener("click", ()=>{
       const fb = $("#profile-feedback");
-      if(!sex){ fb.textContent = "Selecciona tu sexo."; return; }
-      if(!age){ fb.textContent = "Selecciona tu edad."; return; }
-      if(!music){ fb.textContent = "Indica si tienes estudios musicales."; return; }
-      if(!country){ fb.textContent = "Selecciona un país."; return; }
+      if(!sex){ fb.textContent = t('profile.errSex'); return; }
+      if(!age){ fb.textContent = t('profile.errAge'); return; }
+      if(!music){ fb.textContent = t('profile.errMusic'); return; }
+      if(!country){ fb.textContent = t('profile.errCountry'); return; }
       if(country === "ES"){
-        if(!ccaa){ fb.textContent = "Selecciona una comunidad autónoma."; return; }
-        if(!provincia){ fb.textContent = "Selecciona una provincia."; return; }
+        if(!ccaa){ fb.textContent = t('profile.errCcaa'); return; }
+        if(!provincia){ fb.textContent = t('profile.errProvincia'); return; }
       } else if(!locationText.trim()){
-        fb.textContent = "Escribe tu provincia, región o ciudad.";
+        fb.textContent = t('profile.errLocation');
         return;
       }
       fb.textContent = "";
@@ -3611,17 +4343,17 @@ const WorldMap = (function(){
   function renderConfirm(localOnly){
     const totalWords = responses.reduce((a,r)=>a+(r.words?r.words.length:0),0);
     const msg = totalWords>0
-      ? `${totalWords} palabra(s) añadidas al atlas léxico, repartidas entre las cuatro composiciones.${localOnly ? " (Vista de previsualización: aquí no se comparte con otros visitantes.)" : ""}`
-      : `No se recogieron palabras — no pasa nada, gracias igualmente por tu tiempo.`;
+      ? `${totalWords}${t('confirm.wordsAdded')}${localOnly ? t('confirm.previewNote') : ""}`
+      : t('confirm.noWords');
     panel.innerHTML = `
       <div class="wizard-confirm">
         <div class="w-check">✓</div>
-        <p class="wizard-thanks">Muchas gracias por su participación.<small><i>Hodie dies bonus erit.</i></small></p>
+        <p class="wizard-thanks" data-i18n="confirm.thanks">Muchas gracias por su participación.<small><i>Hodie dies bonus erit.</i></small></p>
         <p class="p-feedback" style="color:var(--text-dim);max-width:440px;">${msg}</p>
       </div>`;
   }
 
-  panel.innerHTML = `<p class="profile-lede">Cargando…</p>`;
+  panel.innerHTML = `<p class="profile-lede" data-i18n="wizard.loading">Cargando…</p>`;
   (async function init(){
     await StateStore.ready();
     version = await StateStore.assignVersion();
@@ -3633,10 +4365,17 @@ const WorldMap = (function(){
 /* ================= GALERÍA ================= */
 /* ================= TRABAJO COMPLETO ================= */
 (function buildTfg(){
-  $("#kw-list").innerHTML = KEYWORDS.map(k=>`<span class="kw">${k}</span>`).join("");
-  $("#tfg-facts").innerHTML = TFG_FACTS.map(f=>`
-    <div class="fact ${f.cls||''}"><dt class="mono">${f.k}</dt><dd>${f.v}</dd></div>
-  `).join("");
+  function renderKw(){
+    $("#kw-list").innerHTML = KEYWORDS.map((k,i)=>`<span class="kw" data-i18n="keywords.${i}">${t('keywords.'+i)}</span>`).join("");
+  }
+  function renderFacts(){
+    $("#tfg-facts").innerHTML = TFG_FACTS.map((f,i)=>`
+      <div class="fact ${f.cls||''}"><dt class="mono" data-i18n="tfgfacts.k.${i}">${t('tfgfacts.k.'+i)}</dt><dd>${f.vKey ? t(f.vKey) : f.v}</dd></div>
+    `).join("");
+  }
+  renderKw();
+  renderFacts();
+  onLangRefresh(()=>{ renderKw(); renderFacts(); });
 })();
 
 /* ================= CRONOLOGÍA ================= */
@@ -3646,13 +4385,13 @@ const WorldMap = (function(){
   TIMELINE.forEach((pt,i)=>{
     const div = document.createElement("div");
     div.className = "tl-item";
-    const t = TIMELINE.length>1 ? i/(TIMELINE.length-1) : 0;
-    const [r,g,b] = [0,1,2].map(k=>Math.round(lerp(from[k],to[k],t)));
+    const frac = TIMELINE.length>1 ? i/(TIMELINE.length-1) : 0;
+    const [r,g,b] = [0,1,2].map(k=>Math.round(lerp(from[k],to[k],frac)));
     div.style.setProperty("--tl-accent", `rgb(${r},${g},${b})`);
     div.innerHTML = `
       <div class="tl-dot"></div>
-      <h3 class="tl-title">${pt.t}</h3>
-      <p class="tl-desc">${pt.d}</p>`;
+      <h3 class="tl-title" data-i18n-html="timeline.${i}.t">${t('timeline.'+i+'.t')}</h3>
+      <p class="tl-desc" data-i18n-html="timeline.${i}.d">${t('timeline.'+i+'.d')}</p>`;
     el.appendChild(div);
   });
   const items = $$(".tl-item");
@@ -3681,7 +4420,7 @@ const WorldMap = (function(){
   QUOTES.forEach((q,i)=>{
     const div = document.createElement("div");
     div.className = "quote-slide";
-    div.innerHTML = `<blockquote><span class="qn mono">${String(i+1).padStart(2,"0")} / ${String(QUOTES.length).padStart(2,"0")}</span>«${q}»</blockquote>`;
+    div.innerHTML = `<blockquote><span class="qn mono">${String(i+1).padStart(2,"0")} / ${String(QUOTES.length).padStart(2,"0")}</span>«<span data-i18n="quotes.${i}">${t('quotes.'+i)}</span>»</blockquote>`;
     sticky.appendChild(div);
   });
   const slides = $$(".quote-slide", sticky);
@@ -3756,11 +4495,16 @@ const BIBLIO = [
   if(!grid) return;
   grid.innerHTML = `
     <a class="contact-card contact-mail" href="mailto:desonoadverbum@gmail.com">
-      <div class="c-role">Correo</div>
+      <div class="c-role" data-i18n="contacto.correo">Correo</div>
       <div class="c-name">desonoadverbum@gmail.com</div>
     </a>`;
   fadeInOnView("#contact-grid .contact-card");
 })();
 
+/* Último barrido: si la persona ya tenía guardado un idioma distinto del
+   español (localStorage), esto corrige todo lo que se haya construido con
+   el texto español por defecto -- incluidos los placeholder de los
+   textarea del wizard, que no pueden fijarse por t() al crear la plantilla. */
+applyI18n();
 
 </script>

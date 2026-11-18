@@ -1701,6 +1701,43 @@ const StateStore = (function(){
     }
   }
 
+  /* Asignación de versión A/B a prueba de concurrencia: en vez de contar
+     sesiones ya COMPLETADAS (lo que podía hacer que varias personas que
+     entraran casi a la vez, antes de que ninguna terminara, cayeran todas
+     en la misma versión), reservamos un número de turno con una
+     transacción atómica de Firestore en cuanto alguien EMPIEZA a
+     participar. Cada transacción lee el contador, lo incrementa en 1 y
+     devuelve el valor que le tocó a esa persona — Firestore serializa las
+     transacciones concurrentes (si dos llegan a la vez, una espera y
+     reintenta con el valor ya actualizado), así que el turno nº1 siempre
+     es distinto del nº2, sea cual sea el orden real de llegada.
+     Requiere que las reglas de seguridad de Firestore permitan leer y
+     escribir el documento meta/version_counter (ver security rules en la
+     consola de Firebase) — si esas reglas no lo permiten, o no hay
+     conexión, se recurre al cálculo anterior (sesiones completadas) para
+     no bloquear la participación. */
+  async function assignVersion(){
+    await capReady;
+    if(fsDb && fsApi && typeof fsApi.runTransaction === "function"){
+      try{
+        const ref = fsApi.doc(fsDb, "meta", "version_counter");
+        const turn = await fsApi.runTransaction(fsDb, async (tx)=>{
+          const snap = await tx.get(ref);
+          const current = (snap.exists() && typeof snap.data().count === "number") ? snap.data().count : 0;
+          tx.set(ref, {count: current + 1}, {merge:true});
+          return current;
+        });
+        return (turn % 2 === 0) ? "A" : "B";
+      }catch(e){
+        // sin permisos en las reglas de Firestore, sin red, etc.: seguimos
+        // con el cálculo de reserva más abajo.
+      }
+    }
+    const seen = new Set();
+    subs.forEach(s=>{ if(s.sessionId) seen.add(s.sessionId); });
+    return (seen.size % 2 === 0) ? "A" : "B";
+  }
+
   /* Exportación en formato LexPRO: un libro .xlsx con una hoja "Informantes"
      (código + variables sociodemográficas codificadas), su leyenda en
      "Variables", y una hoja por pieza (Abyssus, Ad_lucem, Vortex,
@@ -1841,7 +1878,7 @@ const StateStore = (function(){
     }catch(e){ return false; }
   }
 
-  return { all: ()=>subs.slice(), submit, onChange, exportCSV, isReadOnly: ()=>!canWrite, ready: ()=>capReady };
+  return { all: ()=>subs.slice(), submit, onChange, exportCSV, isReadOnly: ()=>!canWrite, ready: ()=>capReady, assignVersion };
 })();
 
 /* ================= GRAIN ================= */
@@ -3149,15 +3186,6 @@ const WorldMap = (function(){
     return firstHalfDurante ? "despues" : "durante";
   }
 
-  /* Alternamos contando sesiones ya registradas (sessionId distintos), no
-     envíos sueltos: cada sesión completa aporta ahora cuatro envíos (uno por
-     pieza), así que contar envíos no alternaría A/B correctamente. */
-  function computeVersion(){
-    const seen = new Set();
-    StateStore.all().forEach(s=>{ if(s.sessionId) seen.add(s.sessionId); });
-    return (seen.size % 2 === 0) ? "A" : "B";
-  }
-
   const sessionId = "ses_"+Date.now().toString(36)+Math.random().toString(36).slice(2,8);
   let version = "A";
   let pieceIndex = 0;
@@ -3596,7 +3624,7 @@ const WorldMap = (function(){
   panel.innerHTML = `<p class="profile-lede">Cargando…</p>`;
   (async function init(){
     await StateStore.ready();
-    version = computeVersion();
+    version = await StateStore.assignVersion();
     renderSteps();
     renderProfile();
   })();

@@ -207,14 +207,15 @@ html,body{
 @media(min-width:860px){.nav-links{display:flex;}}
 .nav-links a{
   font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;
-  color:var(--text-dim);position:relative;padding-bottom:.3rem;
-  transition:color .3s;
+  color:var(--adlucem);position:relative;padding-bottom:.3rem;
+  text-shadow:0 0 10px rgba(255,193,94,.45);
+  transition:color .3s,text-shadow .3s;
 }
 .nav-links a::after{
   content:"";position:absolute;left:0;bottom:0;height:1px;width:0;
   background:var(--accent);transition:width .4s var(--ease-out);
 }
-.nav-links a:hover{color:var(--text);}
+.nav-links a:hover{color:#fff;text-shadow:0 0 16px rgba(255,193,94,.8);}
 .nav-links a:hover::after{width:100%;}
 
 /* ============ HERO ============ */
@@ -754,6 +755,15 @@ footer{background:#3d2410;}
 .wpick .w-badge{font-family:"JetBrains Mono",monospace;font-size:.66rem;letter-spacing:.06em;text-transform:uppercase;color:var(--text-faint);}
 .wizard-listen{display:flex;flex-direction:column;gap:1.3rem;align-items:center;text-align:center;}
 .wizard-listen .w-title{font-family:var(--font-serif);font-style:italic;font-size:1.9rem;font-weight:600;}
+.wizard-listen .profile-lede{font-size:1.2rem;line-height:1.6;color:var(--text);text-align:center;}
+.key-intro{
+  display:inline-flex;align-items:center;
+  background:var(--adlucem);color:#1a1006;font-weight:700;
+  padding:.1em .5em;border-radius:6px;
+  box-shadow:0 0 0 1px rgba(255,193,94,.5),0 0 16px -2px rgba(255,193,94,.85);
+  animation:heroCtaGlow 2.6s ease-in-out infinite;
+}
+@media(prefers-reduced-motion:reduce){.key-intro{animation:none;}}
 .wiz-timer{font-size:1.6rem;font-weight:700;color:var(--adlucem);letter-spacing:.02em;}
 .wizard-back{align-self:flex-start;font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;color:var(--text-faint);transition:color .3s;}
 .wizard-back:hover{color:var(--text);}
@@ -1687,6 +1697,7 @@ const I18N = {
     "wizard.sending":"Enviando…",
     "wizard.loading":"Cargando…",
     "wizard.listenAria":"Escuchar",
+    "wizard.pieceLabel":"Pieza ",
 
     "wizard.after.lede":"Escucha la pieza completa. Cuando termine, <span class=\"voc\">tendrás 2 minutos para escribir</span> las palabras que te hayan venido a la mente.",
     "wizard.after.idleTime":"Escucha la pieza completa para empezar",
@@ -1699,7 +1710,7 @@ const I18N = {
     "wizard.after.timerSuffix":" para escribir",
     "wizard.after.errEmpty":"Escribe al menos una palabra.",
 
-    "wizard.during.lede":"Pulsa para escuchar. <span class=\"voc\">Mientras suena la música</span>, escribe cada palabra que te venga a la mente y <span class=\"voc\">pulsa Intro para añadirla</span>. Escribe todas las palabras que la música te vaya evocando, aunque cambien a lo largo de la pieza.",
+    "wizard.during.lede":"Pulsa para escuchar. <span class=\"voc\">Mientras suena la música</span>, escribe cada palabra que te venga a la mente y pulsa <span class=\"key-intro\">Intro</span> o separa con una coma para añadirla. Escribe todas las palabras que la música te vaya evocando, aunque cambien a lo largo de la pieza.",
     "wizard.during.idleTime":"Escucha la pieza completa para empezar",
     "wizard.listenRemainingPrefix":"⏱ Quedan ",
     "wizard.listenRemainingSuffix":" de escucha",
@@ -1731,10 +1742,11 @@ const I18N = {
     "profile.errProvincia":"Selecciona una provincia.",
     "profile.errLocation":"Escribe tu provincia, región o ciudad.",
 
-    "confirm.thanks":"Muchas gracias por su participación.",
+    "confirm.thanks":"Hodie dies bonus erit.",
+    "confirm.gratitude":"Muchas gracias por formar parte de esta investigación.",
     "confirm.wordsAdded":" palabra(s) añadidas al atlas léxico, repartidas entre las cuatro composiciones.",
     "confirm.previewNote":" (Vista de previsualización: aquí no se comparte con otros visitantes.)",
-    "confirm.noWords":"No se recogieron palabras — no pasa nada, gracias igualmente por tu tiempo.",
+    "confirm.noWords":"No se recogieron palabras, pero no pasa nada.",
 
     "trabajo.title":"Trabajo Fin de Grado",
     "tfg.summary":"Este estudio indaga en la interrelación entre la música instrumental, la activación léxica y la construcción semántica, explorando cómo la experiencia musical puede evocar asociaciones léxicas y facilitar procesos de significación incluso en ausencia de palabras. A través de un estudio de campo con 54 estudiantes de Educación Secundaria, la investigación revela que la música instrumental activa campos semánticos compartidos entre oyentes distintos, confirmando su capacidad para generar significado.",
@@ -1864,6 +1876,7 @@ const I18N = {
     "wizard.sending":"Sending…",
     "wizard.loading":"Loading…",
     "wizard.listenAria":"Listen to",
+    "wizard.pieceLabel":"Piece ",
 
     "wizard.after.lede":"Listen to the whole piece. When it ends, <span class=\"voc\">you'll have 2 minutes to write</span> the words that came to mind.",
     "wizard.after.idleTime":"Listen to the whole piece to begin",
@@ -1876,7 +1889,7 @@ const I18N = {
     "wizard.after.timerSuffix":" to write",
     "wizard.after.errEmpty":"Write at least one word.",
 
-    "wizard.during.lede":"Press play to listen. <span class=\"voc\">While the music plays</span>, write every word that comes to mind and <span class=\"voc\">press Enter to add it</span>. Write down every word the music evokes for you, even if it changes as the piece goes on.",
+    "wizard.during.lede":"Press play to listen. <span class=\"voc\">While the music plays</span>, write every word that comes to mind and press <span class=\"key-intro\">Enter</span> or separate it with a comma to add it. Write down every word the music evokes for you, even if it changes as the piece goes on.",
     "wizard.during.idleTime":"Listen to the whole piece to begin",
     "wizard.listenRemainingPrefix":"⏱ ",
     "wizard.listenRemainingSuffix":" left to listen",
@@ -1908,10 +1921,11 @@ const I18N = {
     "profile.errProvincia":"Select a province.",
     "profile.errLocation":"Write your province, region or city.",
 
-    "confirm.thanks":"Thank you so much for taking part.",
+    "confirm.thanks":"Hodie dies bonus erit.",
+    "confirm.gratitude":"Thank you so much for being part of this research.",
     "confirm.wordsAdded":" word(s) added to the lexical atlas, spread across the four compositions.",
     "confirm.previewNote":" (Preview view: this isn't shared with other visitors.)",
-    "confirm.noWords":"No words were collected — that's fine, thank you all the same for your time.",
+    "confirm.noWords":"No words were collected, but that's alright.",
 
     "trabajo.title":"Bachelor's Thesis",
     "tfg.summary":"This study explores the interplay between instrumental music, lexical activation and semantic construction, looking at how the musical experience can evoke lexical associations and facilitate processes of meaning-making even in the absence of words. Through a field study with 54 secondary-school students, the research shows that instrumental music activates semantic fields shared among different listeners, confirming its capacity to generate meaning.",
@@ -2041,6 +2055,7 @@ const I18N = {
     "wizard.sending":"Envoi…",
     "wizard.loading":"Chargement…",
     "wizard.listenAria":"Écouter",
+    "wizard.pieceLabel":"Morceau ",
 
     "wizard.after.lede":"Écoutez le morceau en entier. Une fois terminé, <span class=\"voc\">vous aurez 2 minutes pour écrire</span> les mots qui vous seront venus à l'esprit.",
     "wizard.after.idleTime":"Écoutez le morceau en entier pour commencer",
@@ -2053,7 +2068,7 @@ const I18N = {
     "wizard.after.timerSuffix":" pour écrire",
     "wizard.after.errEmpty":"Écrivez au moins un mot.",
 
-    "wizard.during.lede":"Appuyez pour écouter. <span class=\"voc\">Pendant que la musique joue</span>, écrivez chaque mot qui vous vient à l'esprit et <span class=\"voc\">appuyez sur Entrée pour l'ajouter</span>. Écrivez tous les mots que la musique évoque pour vous, même s'ils changent au fil du morceau.",
+    "wizard.during.lede":"Appuyez pour écouter. <span class=\"voc\">Pendant que la musique joue</span>, écrivez chaque mot qui vous vient à l'esprit et appuyez sur <span class=\"key-intro\">Entrée</span> ou séparez-le par une virgule pour l'ajouter. Écrivez tous les mots que la musique évoque pour vous, même s'ils changent au fil du morceau.",
     "wizard.during.idleTime":"Écoutez le morceau en entier pour commencer",
     "wizard.listenRemainingPrefix":"⏱ Il reste ",
     "wizard.listenRemainingSuffix":" d'écoute",
@@ -2085,10 +2100,11 @@ const I18N = {
     "profile.errProvincia":"Sélectionnez une province.",
     "profile.errLocation":"Indiquez votre province, région ou ville.",
 
-    "confirm.thanks":"Merci beaucoup pour votre participation.",
+    "confirm.thanks":"Hodie dies bonus erit.",
+    "confirm.gratitude":"Merci beaucoup de faire partie de cette recherche.",
     "confirm.wordsAdded":" mot(s) ajouté(s) à l'atlas lexical, répartis entre les quatre compositions.",
     "confirm.previewNote":" (Aperçu de prévisualisation : non partagé avec les autres visiteurs.)",
-    "confirm.noWords":"Aucun mot n'a été recueilli — ce n'est pas grave, merci quand même pour votre temps.",
+    "confirm.noWords":"Aucun mot n'a été recueilli, mais ce n'est pas grave.",
 
     "trabajo.title":"Mémoire de fin d'études",
     "tfg.summary":"Cette étude explore l'interrelation entre la musique instrumentale, l'activation lexicale et la construction sémantique, en examinant comment l'expérience musicale peut évoquer des associations lexicales et faciliter des processus de signification même en l'absence de mots. À travers une étude de terrain menée auprès de 54 élèves du secondaire, la recherche montre que la musique instrumentale active des champs sémantiques partagés entre différents auditeurs, confirmant sa capacité à produire du sens.",
@@ -3930,10 +3946,14 @@ const WorldMap = (function(){
   /* Los datos sociodemográficos se piden AHORA AL PRINCIPIO (antes de
      escuchar nada), a petición de la usuaria: por eso "Sobre ti" va primero
      en los pasos, y las cuatro canciones y la confirmación van después. */
+  /* No se muestra el nombre real de la pieza en ningún punto del
+     cuestionario (barra de pasos, título sobre el reproductor, aria-label
+     del botón de play): a petición de la usuaria, para que el título no
+     condicione las palabras que la persona asocia a la música. Solo se usa
+     un número de orden neutro ("Pieza 1", "Piece 1", "Morceau 1"...). */
   function stepLabels(){
     return [t('wizard.stepAbout')].concat(SONG_ORDER.map((id,i)=>{
-      const w = WORKS.find(x=>x.id===id);
-      return (i+1)+" · "+w.name;
+      return t('wizard.pieceLabel')+(i+1);
     })).concat([t('wizard.stepConfirm')]);
   }
 
@@ -3995,12 +4015,13 @@ const WorldMap = (function(){
     let timeLeft = 120;
     let writingOpen = false;
 
+    const pieceNum = SONG_ORDER.indexOf(work.id)+1;
     panel.innerHTML = `
       <div class="wizard-listen">
-        <div class="w-title" style="color:${work.color}">${work.name}</div>
-        <p class="profile-lede" style="max-width:520px;" data-i18n-html="wizard.after.lede">Escucha la pieza completa. Cuando termine, <span class="voc">tendrás 2 minutos para escribir</span> las palabras que te hayan venido a la mente.</p>
+        <div class="w-title" style="color:${work.color}">${t('wizard.pieceLabel')}${pieceNum}</div>
+        <p class="profile-lede" style="max-width:560px;" data-i18n-html="wizard.after.lede">Escucha la pieza completa. Cuando termine, <span class="voc">tendrás 2 minutos para escribir</span> las palabras que te hayan venido a la mente.</p>
         <div class="p-play">
-          <button class="play-btn p-play-btn" aria-label="${t('wizard.listenAria')} ${work.name}" data-i18n-aria="wizard.listenAria| ${work.name}">
+          <button class="play-btn p-play-btn" aria-label="${t('wizard.listenAria')} ${t('wizard.pieceLabel')}${pieceNum}">
             <svg class="ic-play" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
             <svg class="ic-pause" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="display:none"><path d="M6 4h4v16H6zM14 4h4v16h-4z"/></svg>
           </button>
@@ -4015,11 +4036,21 @@ const WorldMap = (function(){
       </div>`;
 
     const btn = panel.querySelector(".p-play-btn");
+    const titleEl = panel.querySelector(".w-title");
     const timeEl = panel.querySelector(".p-time");
     const timerEl = $("#wiz-timer");
     const ta = $("#wiz-input");
     const submit = $("#wiz-submit");
     const feedback = $("#wiz-feedback");
+
+    /* El título y el aria-label del botón usan la etiqueta neutra "Pieza N"
+       (no el nombre real de la obra), para que no condicione las palabras
+       que la persona asocia a la música. Se recalculan aquí, a mano, en
+       cada cambio de idioma. */
+    onLangRefresh(()=>{
+      titleEl.textContent = t('wizard.pieceLabel')+pieceNum;
+      btn.setAttribute("aria-label", t('wizard.listenAria')+" "+t('wizard.pieceLabel')+pieceNum);
+    });
 
     /* timeEl ya no lleva data-i18n: su contenido depende del estado
        (inactivo / cuenta atrás de escucha / "ya puedes escribir"), no es una
@@ -4143,12 +4174,13 @@ const WorldMap = (function(){
     let startedAt = null, ac = null;
     let duringCountdownId = null;
 
+    const pieceNum = SONG_ORDER.indexOf(work.id)+1;
     panel.innerHTML = `
       <div class="wizard-listen">
-        <div class="w-title" style="color:${work.color}">${work.name}</div>
-        <p class="profile-lede" style="max-width:520px;" data-i18n-html="wizard.during.lede">Pulsa para escuchar. <span class="voc">Mientras suena la música</span>, escribe cada palabra que te venga a la mente y <span class="voc">pulsa Intro para añadirla</span>. Escribe todas las palabras que la música te vaya evocando, aunque cambien a lo largo de la pieza.</p>
+        <div class="w-title" style="color:${work.color}">${t('wizard.pieceLabel')}${pieceNum}</div>
+        <p class="profile-lede" style="max-width:560px;" data-i18n-html="wizard.during.lede">Pulsa para escuchar. <span class="voc">Mientras suena la música</span>, escribe cada palabra que te venga a la mente y pulsa <span class="key-intro">Intro</span> o separa con una coma para añadirla. Escribe todas las palabras que la música te vaya evocando, aunque cambien a lo largo de la pieza.</p>
         <div class="p-play">
-          <button class="play-btn p-play-btn" aria-label="${t('wizard.listenAria')} ${work.name}" data-i18n-aria="wizard.listenAria| ${work.name}">
+          <button class="play-btn p-play-btn" aria-label="${t('wizard.listenAria')} ${t('wizard.pieceLabel')}${pieceNum}">
             <svg class="ic-play" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
             <svg class="ic-pause" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="display:none"><path d="M6 4h4v16H6zM14 4h4v16h-4z"/></svg>
           </button>
@@ -4160,9 +4192,17 @@ const WorldMap = (function(){
       </div>`;
 
     const btn = panel.querySelector(".p-play-btn");
+    const titleEl = panel.querySelector(".w-title");
     const timeEl = panel.querySelector(".p-time");
     const input = $("#wiz-live-input");
     const wordsEl = $("#wiz-live-words");
+
+    /* Título y aria-label con etiqueta neutra "Pieza N" (ver nota en
+       renderListenAfter): se recalculan a mano en cada cambio de idioma. */
+    onLangRefresh(()=>{
+      titleEl.textContent = t('wizard.pieceLabel')+pieceNum;
+      btn.setAttribute("aria-label", t('wizard.listenAria')+" "+t('wizard.pieceLabel')+pieceNum);
+    });
 
     function renderWords(){
       wordsEl.innerHTML = collected.map(c=>`<span class="live-word-chip">${c.word}</span>`).join("");
@@ -4236,8 +4276,13 @@ const WorldMap = (function(){
       if(wordStartT === null) wordStartT = ac ? (ac.currentTime - startedAt) : 0;
     });
 
+    /* Cada palabra se registra tanto al pulsar Intro como al escribir una
+       coma (igual que en la modalidad "después", donde las palabras también
+       se pueden separar por comas): en ambos casos se evita que el carácter
+       se inserte en el campo (preventDefault) y se confirma como palabra lo
+       que hubiera escrito hasta ese momento, con su marca de tiempo. */
     input.addEventListener("keydown", (e)=>{
-      if(e.key !== "Enter") return;
+      if(e.key !== "Enter" && e.key !== ",") return;
       e.preventDefault();
       const w = input.value.trim().toLowerCase();
       input.value = "";
@@ -4439,12 +4484,12 @@ const WorldMap = (function(){
   function renderConfirm(localOnly){
     const totalWords = responses.reduce((a,r)=>a+(r.words?r.words.length:0),0);
     const msg = totalWords>0
-      ? `${totalWords}${t('confirm.wordsAdded')}${localOnly ? t('confirm.previewNote') : ""}`
-      : t('confirm.noWords');
+      ? `${t('confirm.gratitude')} ${totalWords}${t('confirm.wordsAdded')}${localOnly ? t('confirm.previewNote') : ""}`
+      : `${t('confirm.gratitude')} ${t('confirm.noWords')}`;
     panel.innerHTML = `
       <div class="wizard-confirm">
         <div class="w-check">✓</div>
-        <p class="wizard-thanks" data-i18n="confirm.thanks">Muchas gracias por su participación.<small><i>Hodie dies bonus erit.</i></small></p>
+        <p class="wizard-thanks" data-i18n="confirm.thanks">Hodie dies bonus erit.</p>
         <p class="p-feedback" style="color:var(--text-dim);max-width:440px;">${msg}</p>
       </div>`;
   }

@@ -1699,8 +1699,10 @@ const I18N = {
     "wizard.after.timerSuffix":" para escribir",
     "wizard.after.errEmpty":"Escribe al menos una palabra.",
 
-    "wizard.during.lede":"Pulsa para escuchar. <span class=\"voc\">Mientras suena la música</span>, escribe cada palabra que te venga a la mente y <span class=\"voc\">pulsa Intro para añadirla</span>.",
+    "wizard.during.lede":"Pulsa para escuchar. <span class=\"voc\">Mientras suena la música</span>, escribe cada palabra que te venga a la mente y <span class=\"voc\">pulsa Intro para añadirla</span>. Escribe todas las palabras que la música te vaya evocando, aunque cambien a lo largo de la pieza.",
     "wizard.during.idleTime":"Escucha la pieza completa para empezar",
+    "wizard.listenRemainingPrefix":"⏱ Quedan ",
+    "wizard.listenRemainingSuffix":" de escucha",
     "wizard.during.placeholder":"Escribe una palabra y pulsa Intro…",
     "wizard.during.playingPrefix":"Reproduciendo — ",
     "wizard.during.playingMid":" en total. Escribe cada palabra y ",
@@ -1874,8 +1876,10 @@ const I18N = {
     "wizard.after.timerSuffix":" to write",
     "wizard.after.errEmpty":"Write at least one word.",
 
-    "wizard.during.lede":"Press play to listen. <span class=\"voc\">While the music plays</span>, write every word that comes to mind and <span class=\"voc\">press Enter to add it</span>.",
+    "wizard.during.lede":"Press play to listen. <span class=\"voc\">While the music plays</span>, write every word that comes to mind and <span class=\"voc\">press Enter to add it</span>. Write down every word the music evokes for you, even if it changes as the piece goes on.",
     "wizard.during.idleTime":"Listen to the whole piece to begin",
+    "wizard.listenRemainingPrefix":"⏱ ",
+    "wizard.listenRemainingSuffix":" left to listen",
     "wizard.during.placeholder":"Write a word and press Enter…",
     "wizard.during.playingPrefix":"Now playing — ",
     "wizard.during.playingMid":" total. Write each word and ",
@@ -2049,8 +2053,10 @@ const I18N = {
     "wizard.after.timerSuffix":" pour écrire",
     "wizard.after.errEmpty":"Écrivez au moins un mot.",
 
-    "wizard.during.lede":"Appuyez pour écouter. <span class=\"voc\">Pendant que la musique joue</span>, écrivez chaque mot qui vous vient à l'esprit et <span class=\"voc\">appuyez sur Entrée pour l'ajouter</span>.",
+    "wizard.during.lede":"Appuyez pour écouter. <span class=\"voc\">Pendant que la musique joue</span>, écrivez chaque mot qui vous vient à l'esprit et <span class=\"voc\">appuyez sur Entrée pour l'ajouter</span>. Écrivez tous les mots que la musique évoque pour vous, même s'ils changent au fil du morceau.",
     "wizard.during.idleTime":"Écoutez le morceau en entier pour commencer",
+    "wizard.listenRemainingPrefix":"⏱ Il reste ",
+    "wizard.listenRemainingSuffix":" d'écoute",
     "wizard.during.placeholder":"Écrivez un mot et appuyez sur Entrée…",
     "wizard.during.playingPrefix":"Lecture en cours — ",
     "wizard.during.playingMid":" au total. Écrivez chaque mot et ",
@@ -3985,6 +3991,7 @@ const WorldMap = (function(){
 
   function renderListenAfter(work, onDone){
     let countdownId = null;
+    let listenCountdownId = null;
     let timeLeft = 120;
     let writingOpen = false;
 
@@ -3997,7 +4004,7 @@ const WorldMap = (function(){
             <svg class="ic-play" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
             <svg class="ic-pause" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="display:none"><path d="M6 4h4v16H6zM14 4h4v16h-4z"/></svg>
           </button>
-          <span class="work-time mono p-time" data-i18n="wizard.after.idleTime">Escucha la pieza completa para empezar</span>
+          <span class="work-time mono p-time">Escucha la pieza completa para empezar</span>
         </div>
         <div class="wiz-timer mono" id="wiz-timer" hidden></div>
         <textarea class="pinput" id="wiz-input" disabled style="max-width:520px;" placeholder="Escucha la pieza entera. En cuanto termine su reproducción, tendrá 2 minutos para escribir aquí las primeras palabras, imágenes y asociaciones que le hayan venido a la mente al escuchar dicha pieza. Separa cada palabra con una coma o pulsando Intro (salto de línea)." data-i18n-placeholder="wizard.after.placeholder"></textarea>
@@ -4014,16 +4021,52 @@ const WorldMap = (function(){
     const submit = $("#wiz-submit");
     const feedback = $("#wiz-feedback");
 
+    /* timeEl ya no lleva data-i18n: su contenido depende del estado
+       (inactivo / cuenta atrás de escucha / "ya puedes escribir"), no es una
+       traducción estática, así que lo gestionamos a mano aquí y lo
+       re-renderizamos nosotros mismos en cada cambio de idioma (onLangRefresh
+       más abajo). Si llevara data-i18n, el observador de mutaciones del
+       panel (ver applyIsScope/observeWizardPanel) lo pisaría de vuelta al
+       texto de inactivo nada más actualizarlo. */
+    let timeState = "idle"; // "idle" | "listening" | "writingOpen"
+    let listenDuration = null, listenAc = null, listenStartedAt = null;
+
+    function renderTimeEl(){
+      if(timeState === "listening" && listenAc){
+        const remaining = Math.max(0, listenDuration - (listenAc.currentTime - listenStartedAt));
+        timeEl.textContent = t('wizard.listenRemainingPrefix')+fmtTime(remaining)+t('wizard.listenRemainingSuffix');
+      } else if(timeState === "writingOpen"){
+        timeEl.innerHTML = '<span class="voc">'+t('wizard.after.writingOpen')+'</span>';
+      } else {
+        timeEl.textContent = t('wizard.after.idleTime');
+      }
+    }
+    renderTimeEl();
+    onLangRefresh(renderTimeEl);
+
     function clearCountdown(){
       if(countdownId){ clearInterval(countdownId); countdownId = null; }
     }
 
+    function clearListenCountdown(){
+      if(listenCountdownId){ clearInterval(listenCountdownId); listenCountdownId = null; }
+    }
+
+    function startListenCountdown(duration, ac, startedAt){
+      clearListenCountdown();
+      timeState = "listening";
+      listenDuration = duration; listenAc = ac; listenStartedAt = startedAt;
+      renderTimeEl();
+      listenCountdownId = setInterval(renderTimeEl, 250);
+    }
+
     function resetUI(){
       playing=false;
+      clearListenCountdown();
       btn.classList.remove("playing");
       btn.querySelector(".ic-play").style.display="";
       btn.querySelector(".ic-pause").style.display="none";
-      if(!writingOpen) timeEl.textContent = t('wizard.after.idleTime');
+      if(!writingOpen){ timeState = "idle"; renderTimeEl(); }
     }
 
     function updateTimerText(){
@@ -4037,7 +4080,8 @@ const WorldMap = (function(){
       ta.disabled = false;
       submit.disabled = false;
       ta.focus();
-      timeEl.innerHTML = '<span class="voc">'+t('wizard.after.writingOpen')+'</span>';
+      timeState = "writingOpen";
+      renderTimeEl();
       timerEl.hidden = false;
       timeLeft = 120;
       updateTimerText();
@@ -4073,7 +4117,8 @@ const WorldMap = (function(){
     btn.addEventListener("click", ()=>{
       if(playing){ AudioEngine.stop(work.id); resetUI(); releasePlayback(work.id); return; }
       claimPlayback(work.id, resetUI);
-      const {duration} = AudioEngine.play(work.id, ()=>{
+      const {duration, ac, startedAt} = AudioEngine.play(work.id, ()=>{
+        clearListenCountdown();
         resetUI();
         releasePlayback(work.id);
         openWriting();
@@ -4082,7 +4127,7 @@ const WorldMap = (function(){
       btn.classList.add("playing");
       btn.querySelector(".ic-play").style.display="none";
       btn.querySelector(".ic-pause").style.display="";
-      timeEl.textContent = t('wizard.after.playingPrefix')+fmtTime(duration)+t('wizard.after.playingSuffix');
+      startListenCountdown(duration, ac, startedAt);
     });
 
     submit.addEventListener("click", ()=>{
@@ -4096,17 +4141,18 @@ const WorldMap = (function(){
   function renderListenDuring(work, onDone){
     const collected = []; // {word, t}
     let startedAt = null, ac = null;
+    let duringCountdownId = null;
 
     panel.innerHTML = `
       <div class="wizard-listen">
         <div class="w-title" style="color:${work.color}">${work.name}</div>
-        <p class="profile-lede" style="max-width:520px;" data-i18n-html="wizard.during.lede">Pulsa para escuchar. <span class="voc">Mientras suena la música</span>, escribe cada palabra que te venga a la mente y <span class="voc">pulsa Intro para añadirla</span>.</p>
+        <p class="profile-lede" style="max-width:520px;" data-i18n-html="wizard.during.lede">Pulsa para escuchar. <span class="voc">Mientras suena la música</span>, escribe cada palabra que te venga a la mente y <span class="voc">pulsa Intro para añadirla</span>. Escribe todas las palabras que la música te vaya evocando, aunque cambien a lo largo de la pieza.</p>
         <div class="p-play">
           <button class="play-btn p-play-btn" aria-label="${t('wizard.listenAria')} ${work.name}" data-i18n-aria="wizard.listenAria| ${work.name}">
             <svg class="ic-play" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
             <svg class="ic-pause" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="display:none"><path d="M6 4h4v16H6zM14 4h4v16h-4z"/></svg>
           </button>
-          <span class="work-time mono p-time" data-i18n="wizard.during.idleTime">Escucha la pieza completa para empezar</span>
+          <span class="work-time mono p-time">Escucha la pieza completa para empezar</span>
         </div>
         <textarea class="pinput pinput-live" id="wiz-live-input" rows="1" disabled style="max-width:520px;" placeholder="Escribe una palabra y pulsa Intro…" data-i18n-placeholder="wizard.during.placeholder"></textarea>
         <div class="wiz-live-words" id="wiz-live-words"></div>
@@ -4122,11 +4168,45 @@ const WorldMap = (function(){
       wordsEl.innerHTML = collected.map(c=>`<span class="live-word-chip">${c.word}</span>`).join("");
     }
 
+    /* timeEl ya no lleva data-i18n: ver nota equivalente en renderListenAfter
+       sobre por qué el contenido dinámico se gestiona a mano con
+       onLangRefresh en lugar de con data-i18n. */
+    let timeState = "idle"; // "idle" | "listening" | "pendingFinish"
+    let listenDuration = null;
+
+    function renderTimeEl(){
+      if(timeState === "listening" && ac){
+        const remaining = Math.max(0, listenDuration - (ac.currentTime - startedAt));
+        timeEl.textContent = t('wizard.listenRemainingPrefix')+fmtTime(remaining)+t('wizard.listenRemainingSuffix');
+      } else if(timeState === "pendingFinish"){
+        timeEl.textContent = t('wizard.during.pendingFinish');
+      } else {
+        timeEl.textContent = t('wizard.during.idleTime');
+      }
+    }
+    renderTimeEl();
+    onLangRefresh(renderTimeEl);
+
+    function clearDuringCountdown(){
+      if(duringCountdownId){ clearInterval(duringCountdownId); duringCountdownId = null; }
+    }
+
+    function startDuringCountdown(duration){
+      clearDuringCountdown();
+      timeState = "listening";
+      listenDuration = duration;
+      renderTimeEl();
+      duringCountdownId = setInterval(renderTimeEl, 250);
+    }
+
     function resetUI(){
       playing=false;
+      clearDuringCountdown();
       btn.classList.remove("playing");
       btn.querySelector(".ic-play").style.display="";
       btn.querySelector(".ic-pause").style.display="none";
+      timeState = "idle";
+      renderTimeEl();
     }
 
     function finish(){
@@ -4181,7 +4261,8 @@ const WorldMap = (function(){
         releasePlayback(work.id);
         if(input.value.trim().length > 0){
           pendingFinish = true;
-          timeEl.textContent = t('wizard.during.pendingFinish');
+          timeState = "pendingFinish";
+          renderTimeEl();
         } else {
           finish();
         }
@@ -4193,7 +4274,7 @@ const WorldMap = (function(){
       btn.classList.add("playing");
       btn.querySelector(".ic-play").style.display="none";
       btn.querySelector(".ic-pause").style.display="";
-      timeEl.innerHTML = t('wizard.during.playingPrefix')+fmtTime(r.duration)+t('wizard.during.playingMid')+'<span class="voc">'+t('wizard.during.playingEnter')+'</span>.';
+      startDuringCountdown(r.duration);
     });
   }
 
